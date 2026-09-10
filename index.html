@@ -7,6 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Taviraj:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Sarabun:wght@300;400;500;600;700&family=Kanit:wght@500;600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK (Compat Version สำหรับใช้งานบน Static Web โดยไม่ต้อง Build) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
 <style>
 :root{
   --forest-deep:#182821; --forest:#33503C; --forest-soft:#4B6B54;
@@ -17,7 +22,6 @@
   --line:rgba(42,35,25,0.14);
   --surface:#fffdf8; --surface-2:#f4efe5; --grid:rgba(42,35,25,0.09);
   --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4; --c6:#008300;
-  --c1-soft:#e9f1fc; --c2-soft:#fdeee7; --c3-soft:#e4f5ee; --c4-soft:#fdf3da; --c5-soft:#fdeef4; --c6-soft:#e6f2e6;
   --good:#0ca30c; --bad:#d03b3b;
 }
 [data-theme="dark"]{
@@ -27,7 +31,6 @@
   --line:rgba(255,255,255,0.10);
   --surface:#1a1a19; --surface-2:#232320; --grid:rgba(255,255,255,0.08);
   --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300;
-  --c1-soft:#24324a; --c2-soft:#3a2822; --c3-soft:#1f3a30; --c4-soft:#3a301c; --c5-soft:#3a2733; --c6-soft:#233023;
   --good:#0ca30c; --bad:#e66767;
 }
 *{box-sizing:border-box; margin:0; padding:0;}
@@ -42,7 +45,7 @@ img{max-width:100%; display:block;}
 
 .app{width:100%; max-width:520px; background:var(--cream); min-height:100vh; position:relative; overflow:hidden;}
 
-/* ===== TOP BAR ===== */
+/* TOP BAR */
 .topbar{
   position:sticky; top:0; z-index:50;
   display:flex; align-items:center; justify-content:space-between;
@@ -52,7 +55,9 @@ img{max-width:100%; display:block;}
 }
 .topbar .brand{font-family:'Kanit',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.04em;}
 .topbar .brand small{display:block; font-size:10px; font-weight:500; color:var(--amber); letter-spacing:0.08em;}
-.topbar .actions{display:flex; gap:6px;}
+.topbar .actions{display:flex; gap:6px; align-items:center;}
+.sync-status{font-size:11px; color:#A7D7C5; display:flex; align-items:center; gap:4px; margin-right:4px;}
+.sync-dot{width:8px; height:8px; border-radius:50%; background:#28df99; box-shadow:0 0 8px #28df99;}
 .icon-btn{
   width:36px; height:36px; border-radius:10px; border:1px solid rgba(255,255,255,0.2);
   background:rgba(255,255,255,0.08); color:#F2EAD9; font-size:16px;
@@ -60,11 +65,8 @@ img{max-width:100%; display:block;}
 }
 .icon-btn:active{transform:scale(0.94);}
 
-/* ===== TABS ===== */
-.tabs{
-  display:flex; gap:8px; padding:12px 16px 4px;
-  background:var(--cream);
-}
+/* TABS */
+.tabs{display:flex; gap:8px; padding:12px 16px 4px; background:var(--cream);}
 .tab{
   flex:1; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
   background:var(--surface); color:var(--ink-soft);
@@ -74,12 +76,9 @@ img{max-width:100%; display:block;}
 }
 .tab.active{background:var(--forest); color:#F2EAD9; border-color:var(--forest);}
 
-/* ===== HERO ===== */
+/* HERO */
 .hero{position:relative; margin:12px 16px 0; border-radius:18px; overflow:hidden; background:#111; color:#fff; min-height:200px;}
-.hero-photo{
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 22%;
-  filter:saturate(0.92) contrast(1.03);
-}
+.hero-photo{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 22%;}
 .hero-gradient{position:absolute; inset:0; background:linear-gradient(180deg, rgba(15,23,18,0.45) 0%, rgba(15,23,18,0.05) 40%, rgba(15,23,18,0.9) 100%);}
 .hero-content{position:absolute; left:0; right:0; bottom:0; padding:18px 20px; z-index:2;}
 .hero-content .eyebrow{color:var(--amber); font-family:'Kanit'; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; font-weight:600;}
@@ -95,11 +94,8 @@ img{max-width:100%; display:block;}
 .section-title h2{font-family:'Taviraj',serif; font-weight:600; font-size:22px;}
 .section-title .sub{font-size:12px; color:var(--ink-soft);}
 
-/* ===== DAY SCHEDULE ===== */
-.day-card{
-  background:var(--surface); border:1px solid var(--line); border-radius:16px;
-  margin-bottom:14px; overflow:hidden;
-}
+/* DAY SCHEDULE */
+.day-card{background:var(--surface); border:1px solid var(--line); border-radius:16px; margin-bottom:14px; overflow:hidden;}
 .day-card-head{display:flex; align-items:center; gap:10px; padding:14px 16px; cursor:pointer;}
 .day-dot{width:10px; height:10px; border-radius:50%; flex-shrink:0;}
 .day-card-head .dnum{font-family:'Kanit'; font-size:12px; font-weight:700; letter-spacing:0.12em; color:var(--ink-soft);}
@@ -133,9 +129,7 @@ img{max-width:100%; display:block;}
 .add-row-btn:active{background:var(--surface-2);}
 
 /* inline editor */
-.editor{
-  padding:12px 16px 16px 30px; display:flex; flex-direction:column; gap:8px;
-}
+.editor{padding:12px 16px 16px 30px; display:flex; flex-direction:column; gap:8px;}
 .editor input{
   width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line);
   background:var(--surface-2); color:var(--ink); font-size:14px; outline:none;
@@ -144,23 +138,18 @@ img{max-width:100%; display:block;}
 .editor .row{display:flex; gap:8px;}
 .editor .row input{flex:1;}
 .editor .btn-row{display:flex; gap:8px;}
-.editor .btn{
-  flex:1; padding:10px; border-radius:10px; font-size:14px; font-weight:700; border:none;
-}
+.editor .btn{flex:1; padding:10px; border-radius:10px; font-size:14px; font-weight:700; border:none;}
 .editor .btn.save{background:var(--forest); color:#F2EAD9;}
 .editor .btn.cancel{background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--line);}
 
-/* ===== DASHBOARD ===== */
+/* DASHBOARD */
 .kpi-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
-.kpi{
-  background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
-}
+.kpi{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px;}
 .kpi .label{font-size:12px; color:var(--ink-soft); font-weight:600;}
 .kpi .value{font-family:'Kanit'; font-size:26px; font-weight:700; margin-top:2px; letter-spacing:-0.01em;}
 .kpi .hint{font-size:11px; color:var(--ink-faint); margin-top:2px;}
 .kpi.full{grid-column:span 2;}
 
-/* people stepper */
 .people-row{display:flex; align-items:center; gap:8px; margin-top:8px;}
 .people-btn{
   width:30px; height:30px; border-radius:9px; border:1px solid var(--line);
@@ -175,32 +164,25 @@ img{max-width:100%; display:block;}
 .budget-bar .fill.warn{background:var(--amber);}
 .budget-bar .fill.over{background:var(--bad);}
 
-.card{
-  background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:14px;
-}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:14px;}
 .card h3{font-family:'Taviraj',serif; font-weight:600; font-size:18px; margin-bottom:12px;}
-.card .card-sub{font-size:12px; color:var(--ink-soft); margin:-8px 0 12px;}
 
-/* legend */
 .legend{display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:10px;}
 .legend .lg{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft);}
 .legend .sw{width:11px; height:11px; border-radius:3px; flex-shrink:0;}
 
-/* category bars */
 .cat-row{display:grid; grid-template-columns:110px 1fr 74px; align-items:center; gap:10px; padding:7px 0;}
 .cat-row .name{font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .cat-row .track{height:9px; border-radius:999px; background:var(--surface-2); overflow:hidden;}
 .cat-row .track .fill{height:100%; border-radius:999px;}
 .cat-row .amt{font-size:13px; font-weight:700; text-align:right; font-variant-numeric:tabular-nums;}
 
-/* day bars */
 .day-bar-row{display:grid; grid-template-columns:52px 1fr 70px; align-items:center; gap:10px; padding:8px 0;}
 .day-bar-row .dl{font-family:'Kanit'; font-size:12px; font-weight:600; color:var(--ink-soft);}
 .day-bar-row .track{height:12px; border-radius:999px; background:var(--surface-2); overflow:hidden;}
 .day-bar-row .track .fill{height:100%; border-radius:999px; transition:width .4s;}
 .day-bar-row .amt{font-size:13px; font-weight:700; text-align:right; font-variant-numeric:tabular-nums;}
 
-/* expense list */
 .exp-table{width:100%; border-collapse:collapse;}
 .exp-table th{font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; text-align:left; padding:6px 4px; border-bottom:1px solid var(--line); font-weight:600;}
 .exp-table td{font-size:13.5px; padding:8px 4px; border-bottom:1px solid var(--line); vertical-align:top;}
@@ -235,7 +217,6 @@ img{max-width:100%; display:block;}
 
 .empty{text-align:center; color:var(--ink-faint); font-size:13px; padding:20px 0;}
 
-/* budget setter */
 .budget-row{display:flex; gap:8px; align-items:center; margin-bottom:4px;}
 .budget-row input{
   flex:1; padding:10px 12px; border-radius:10px; border:1px solid var(--line);
@@ -243,7 +224,6 @@ img{max-width:100%; display:block;}
 }
 .budget-row .btn{background:var(--forest); color:#F2EAD9; border:none; padding:10px 16px; border-radius:10px; font-weight:700;}
 
-/* toast */
 .toast{
   position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
   background:var(--forest-deep); color:#F2EAD9; padding:10px 18px; border-radius:999px;
@@ -263,6 +243,7 @@ img{max-width:100%; display:block;}
   <div class="topbar">
     <div class="brand">UBON × PAKSE × BOLAVEN<small>TRIP PLANNER & BUDGET</small></div>
     <div class="actions">
+      <div class="sync-status" id="syncStatus"><span class="sync-dot"></span>คลาวด์พร้อม</div>
       <button class="icon-btn" id="themeBtn" title="สลับธีม">🌙</button>
     </div>
   </div>
@@ -280,7 +261,7 @@ img{max-width:100%; display:block;}
       <div class="hero-photo" id="heroPhoto"></div>
       <div class="hero-gradient"></div>
       <div class="hero-content">
-        <span class="eyebrow">21–25 ตุลาคม 2569 · Road Trip</span>
+        <span class="eyebrow">21–25 ตุลาคม 2569 · Adventure Road Trip</span>
         <div class="hero-title">อุบลฯ × ปากเซ × โบลาเวน</div>
         <div class="hero-sub">4 วัน 3 คืน ข้ามแดนไทย–ลาว เที่ยวน้ำตก ไร่กาแฟ และแม่น้ำโขง</div>
         <div class="hero-meta">
@@ -293,12 +274,12 @@ img{max-width:100%; display:block;}
     <div class="section-pad">
       <div class="section-title">
         <h2>ตารางแต่ละวัน</h2>
-        <span class="sub">แตะเพื่อแก้ไขเวลา / สถานที่</span>
+        <span class="sub">แก้ไขแล้วซิงก์ทุกเครื่องทันที</span>
       </div>
       <div id="daysContainer"></div>
     </div>
 
-    <div class="footer">ข้อมูลบันทึกลงเครื่องอัตโนมัติ (localStorage) · แตะเวลาหรือที่อยู่เพื่อแก้ไข</div>
+    <div class="footer">เชื่อมต่อ Firebase Realtime Database ซิงก์ข้อมูลอัตโนมัติ</div>
   </div>
 
   <!-- ============ BUDGET VIEW ============ -->
@@ -326,11 +307,11 @@ img{max-width:100%; display:block;}
           <div class="budget-bar"><div class="fill" id="kpiBar"></div></div>
         </div>
         <div class="kpi">
-          <div class="label" id="kpiPerLabel">ต่อคน · 3 คน</div>
+          <div class="label" id="kpiPerLabel">ต่อคน · 2 คน</div>
           <div class="value" id="kpiPer">฿0</div>
           <div class="people-row">
             <button class="people-btn" onclick="changePeople(-1)" title="ลดจำนวนคน">−</button>
-            <span class="people-num" id="peopleNum">3</span>
+            <span class="people-num" id="peopleNum">2</span>
             <button class="people-btn" onclick="changePeople(1)" title="เพิ่มจำนวนคน">+</button>
           </div>
         </div>
@@ -344,7 +325,7 @@ img{max-width:100%; display:block;}
       <div class="card">
         <h3>ตั้งงบประมาณรวม</h3>
         <div class="budget-row">
-          <input type="number" id="budgetInput" placeholder="เช่น 25000" inputmode="numeric">
+          <input type="number" id="budgetInput" placeholder="เช่น 30000" inputmode="numeric">
           <button class="btn" onclick="setBudget()">บันทึก</button>
         </div>
       </div>
@@ -402,14 +383,31 @@ img{max-width:100%; display:block;}
 
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
-/* ================= DATA ================= */
+/* ================= FIREBASE CONFIG ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyA9rszgwvpWwweOGdQgc0ybaU05YqLbw_c",
+  authDomain: "ubon-trip-planner.firebaseapp.com",
+  databaseURL: "https://ubon-trip-planner-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ubon-trip-planner",
+  storageBucket: "ubon-trip-planner.firebasestorage.app",
+  messagingSenderId: "1067737286118",
+  appId: "1:1067737286118:web:7fb191d74f30e87ee30227"
+};
+
+// เริ่มการทำงาน Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const tripRef = db.ref("trip_data");
+
+/* ================= DATA META & SEED ================= */
 const DAYS_META = [
   {id:0, date:"21 ต.ค.", route:"กรุงเทพฯ → อุบลราชธานี", color:"#E2914A", mood:"🌙 Night Train", stay:"บนรถไฟตู้นอน"},
-  {id:1, date:"22 ต.ค.", route:"อุบลฯ → ปากเซ → โบลาเวน", color:"#A15C34", mood:"🚗 Border Crossing", stay:"ปากซอง / ตาดฟาน"},
-  {id:2, date:"23 ต.ค.", route:"Bolaven Small Loop", color:"#7C4526", mood:"☕ Slow Wander", stay:"ตาดโล"},
-  {id:3, date:"24 ต.ค.", route:"ลาว → โขงเจียม", color:"#45606B", mood:"🌊 Slow & Romantic", stay:"โขงเจียม"},
-  {id:4, date:"25 ต.ค.", route:"ผาแต้ม → อุบลฯ → กรุงเทพฯ", color:"#C97B63", mood:"🌅 Farewell", stay:"✈️ กลับกรุงเทพฯ"}
+  {id:1, date:"22 ต.ค.", route:"อุบลฯ → ปากเซ → โบลาเวน", color:"#A15C34", mood:"🚗 Cross Border & Chill", stay:"ปากซอง / ตาดฟาน"},
+  {id:2, date:"23 ต.ค.", route:"โบลาเวน → ปากเซ", color:"#7C4526", mood:"🧗 Zipline & Jungle Trail", stay:"ตัวเมืองปากเซ"},
+  {id:3, date:"24 ต.ค.", route:"ปากเซ → วัดพู → โขงเจียม", color:"#45606B", mood:"🏛️ Heritage & Mekong Sunset", stay:"ริมแม่น้ำโขง โขงเจียม"},
+  {id:4, date:"25 ต.ค.", route:"ผาแต้ม → อุบลฯ → กรุงเทพฯ", color:"#C97B63", mood:"🌅 Pha Taem Sunrise", stay:"✈️ บินกลับกรุงเทพฯ"}
 ];
 
 const CATS = ["เดินทาง","ที่พัก","อาหาร","กิจกรรม","ค่าเข้าชม","ช้อปปิ้ง","อื่น ๆ"];
@@ -418,63 +416,69 @@ const CAT_ICONS = ["🚗","🏨","🍜","🎯","🎫","🛍️","📦"];
 
 const SEED_SCHEDULE = {
   0:[
-    {t:"21:30", n:"ขึ้นรถไฟตู้นอนจากกรุงเทพฯ", p:"สถานีกลางกรุงเทพอภิวัฒน์", c:0},
+    {t:"20:30", n:"ขึ้นรถไฟตู้นอนจากกรุงเทพฯ", p:"สถานีกลางกรุงเทพอภิวัฒน์", c:0},
     {t:"—", n:"นอนบนรถไฟ ปล่อยให้รางพาไป", p:"ขบวนรถไฟสายอีสาน", c:0},
-    {t:"06:30", n:"ตื่นเช้าที่อุบลราชธานี", p:"สถานีรถไฟอุบลราชธานี", c:0}
+    {t:"06:30", n:"ตื่นเช้า เตรียมลงสถานีอุบลราชธานี", p:"สถานีรถไฟอุบลราชธานี", c:0}
   ],
   1:[
-    {t:"06:30", n:"ถึงอุบลฯ ตอนเช้า", p:"สถานีรถไฟอุบลราชธานี", c:0},
-    {t:"08:30", n:"เดินทางไปด่านช่องเม็ก", p:"อ.สิรินธร", c:0},
-    {t:"09:30", n:"ข้ามชายแดนไทย–ลาว", p:"วังเต่า → ปากเซ", c:0},
-    {t:"11:00", n:"รับรถเช่าฝั่งลาว", p:"ปากเซ", c:0},
-    {t:"12:30", n:"ขับขึ้นที่ราบสูงโบลาเวน", p:"เส้นทางสู่ปากซอง", c:0},
-    {t:"14:30", n:"น้ำตกตาดฟาน · ตาดยูง", p:"อุทยานตาดฟาน", c:0},
-    {t:"16:30", n:"ไร่กาแฟ / คาเฟ่ท้องถิ่น", p:"ปากซอง", c:0},
-    {t:"18:30", n:"เช็คอินที่พัก", p:"ปากซอง / ตาดฟาน", c:0}
+    {t:"06:30", n:"ถึงสถานีรถไฟอุบลฯ ข้ามไป บขส. อุบลฯ", p:"สถานีรถไฟอุบลฯ → บขส. อุบลฯ", c:0},
+    {t:"09:30", n:"ขึ้นรถบัสระหว่างประเทศ อุบลฯ → ปากเซ", p:"บขส. อุบลราชธานี", c:0},
+    {t:"11:30", n:"ผ่านพิธีการด่าน ตม. ไทย–ลาว (รถบัสรอ)", p:"ด่านช่องเม็ก → วังเต่า", c:0},
+    {t:"12:30", n:"ถึงเมืองปากเซ & มื้อกลางวันเร็วๆ", p:"ตัวเมืองปากเซ", c:0},
+    {t:"13:30", n:"รับรถเช่าพวงมาลัยซ้าย ขับขึ้นโบลาเวน", p:"ปากเซ → ปากซอง (สาย 16E)", c:0},
+    {t:"15:00", n:"CC1971 Cafe จิบกาแฟโรงคั่วเก่าสุดคลาสสิก", p:"ปากซอง", c:0},
+    {t:"17:00", n:"เช็คอินที่พัก สัมผัสอากาศเย็นเมืองหนาว", p:"ปากซอง / ตาดฟาน", c:0},
+    {t:"18:30", n:"มื้อค่ำ พักผ่อนเอาแรงเตรียมลุยพรุ่งนี้", p:"ร้านอาหารท้องถิ่นปากซอง", c:0}
   ],
   2:[
-    {t:"08:00", n:"เที่ยวเส้นทางโบลาเวนแบบเต็มวัน", p:"ปากซอง", c:0},
-    {t:"09:30", n:"หมู่บ้านท้องถิ่น · ไร่กาแฟ", p:"Bolaven Plateau", c:0},
-    {t:"12:00", n:"อาหารกลางวัน", p:"ร้านท้องถิ่น", c:0},
-    {t:"13:30", n:"ถนนกลางป่า · น้ำตก", p:"ตาดโล", c:0},
-    {t:"16:00", n:"เดินเส้นทางธรรมชาติ · จุดชมวิว", p:"ท่าแตง", c:0},
-    {t:"18:30", n:"เช็คอินที่พัก", p:"ตาดโล", c:0}
+    {t:"08:00", n:"เดินทางสู่อุทยานน้ำตกตาดฟาน", p:"ตาดฟาน (หลัก 38)", c:0},
+    {t:"08:30", n:"🧗 Tad Fane Zipline โหนสลิงข้ามเหวน้ำตกคู่", p:"น้ำตกตาดฟาน", c:0},
+    {t:"10:45", n:"CPC Cafe (หลัก 40) ชิมกาแฟ Specialty สหกรณ์", p:"Bolaven Coffee Cooperative (Lak 40)", c:0},
+    {t:"12:00", n:"น้ำตกตาดเยื้อง & อาหารกลางวัน", p:"น้ำตกตาดเยื้อง (Lak 40)", c:0},
+    {t:"13:30", n:"🥾 เทรลน้ำตกตาดตาเก็ดเสือ (ตาดตาหยิกเสือ)", p:"บ้านหนองหลวง / ดงหัวสาว", c:0},
+    {t:"16:30", n:"ขับรถลงจากที่ราบสูงโบลาเวน สู่ปากเซ", p:"เส้นทาง 16E → เมืองปากเซ", c:0},
+    {t:"18:00", n:"เช็คอินโรงแรมในเมืองปากเซ", p:"ตัวเมืองปากเซ (ริมน้ำโขง)", c:0},
+    {t:"19:00", n:"อาหารค่ำริมแม่น้ำโขง รับลมเย็นฟื้นฟูร่างกาย", p:"ร้านอาหารริมโขง ปากเซ", c:0}
   ],
   3:[
-    {t:"08:00", n:"ออกจากตาดโล → ท่าแตง → ปากเซ", p:"ลงจากที่ราบสูง", c:0},
-    {t:"11:00", n:"ปากเซ → วังเต่า", p:"เส้นทางชายแดน", c:0},
-    {t:"13:00", n:"ข้ามพรมแดนกลับไทย", p:"ด่านช่องเม็ก", c:0},
-    {t:"15:00", n:"ช่องเม็ก → โขงเจียม", p:"อ.โขงเจียม", c:0},
-    {t:"17:00", n:"ยามเย็นริมแม่น้ำโขง · ชมพระอาทิตย์ตก", p:"โขงเจียม", c:0},
-    {t:"19:00", n:"อาหารท้องถิ่น · พักผ่อนริมน้ำ", p:"ริมแม่น้ำโขง", c:0}
+    {t:"08:00", n:"อาหารเช้า & เช็คเอาท์โรงแรมปากเซ", p:"ตัวเมืองปากเซ", c:0},
+    {t:"08:45", n:"ขับรถข้ามสะพานมิตรภาพลาว-ญี่ปุ่น ลงใต้", p:"ปากเซ → จำปาสัก", c:0},
+    {t:"09:30", n:"🏛️ ปราสาทหินวัดพู มรดกโลกริมภูเก้า", p:"เมืองจำปาสัก", c:0},
+    {t:"12:00", n:"อาหารกลางวันริมแม่น้ำโขง จำปาสัก", p:"เมืองจำปาสัก", c:0},
+    {t:"13:30", n:"ขับกลับปากเซ คืนรถเช่า & นั่งรถไปด่านวังเต่า", p:"ตัวเมืองปากเซ", c:0},
+    {t:"14:30", n:"ผ่านด่าน ตม. วังเต่า–ช่องเม็ก ข้ามกลับไทย", p:"ด่านช่องเม็ก", c:0},
+    {t:"15:30", n:"เดินทางจากช่องเม็ก สู่ อ.โขงเจียม", p:"ช่องเม็ก → โขงเจียม", c:0},
+    {t:"17:00", n:"ชมพระอาทิตย์ตก & บรรยากาศริมแม่น้ำโขง", p:"ริมน้ำโขงเจียม", c:0},
+    {t:"18:30", n:"อาหารเย็นริมโขง & เช็คอินที่พักผ่อนคลาย", p:"โขงเจียม", c:0}
   ],
   4:[
-    {t:"05:30", n:"ตื่นเช้าที่โขงเจียม", p:"โขงเจียม", c:0},
-    {t:"07:00", n:"อุทยานแห่งชาติผาแต้ม", p:"จุดชมวิวแม่น้ำโขง", c:0},
-    {t:"09:30", n:"เสาเฉลียง · ภาพเขียนสีโบราณ", p:"ผาแต้ม", c:0},
-    {t:"11:30", n:"คาเฟ่ · อาหารกลางวัน", p:"อุบลราชธานี", c:0},
-    {t:"14:00", n:"เดินเล่นในเมืองอุบลฯ", p:"ตัวเมืองอุบล", c:0},
-    {t:"15:30", n:"คืนรถเช่า → สนามบิน", p:"สนามบินอุบลราชธานี", c:0},
-    {t:"17:15", n:"บินกลับกรุงเทพฯ", p:"✈️ TG/DD เที่ยวบิน 17:15", c:0}
+    {t:"05:30", n:"ออกเดินทางเช้าตรู่ สู่ผาแต้ม", p:"โขงเจียม → อุทยานแห่งชาติผาแต้ม", c:0},
+    {t:"06:00", n:"🌅 จุดชมวิวผาแต้ม ชมแสงแรกรับอรุณริมหน้าผา", p:"ผาแต้ม", c:0},
+    {t:"07:00", n:"เดินชมเสาเฉลียง & เส้นทางภาพเขียนสีโบราณ", p:"อุทยานแห่งชาติผาแต้ม", c:0},
+    {t:"09:00", n:"อาหารเช้า & แวะคาเฟ่ริมโขงเจียม", p:"อ.โขงเจียม", c:0},
+    {t:"10:30", n:"ขับรถเดินทางกลับเข้าตัวเมืองอุบลฯ", p:"โขงเจียม → เมืองอุบลฯ", c:0},
+    {t:"12:00", n:"อาหารกลางวัน & แวะคาเฟ่ตัวเมืองอุบลฯ", p:"ตัวเมืองอุบลราชธานี", c:0},
+    {t:"14:30", n:"คืนรถเช่าฝั่งไทย & เดินทางถึงสนามบิน", p:"สนามบินอุบลราชธานี", c:0},
+    {t:"17:15", n:"✈️ บินกลับกรุงเทพฯ ด้วยความประทับใจ", p:"สนามบินอุบลราชธานี (UBP)", c:0}
   ]
 };
 
 const SEED_EXPENSES = [
-  {name:"รถไฟตู้นอน กทม.–อุบลฯ", amt:1100, cat:"เดินทาง", day:0},
-  {name:"รถเช่า (ลาว) 3 วัน", amt:4500, cat:"เดินทาง", day:1},
-  {name:"ค่าข้ามแดน + visa", amt:900, cat:"เดินทาง", day:1},
+  {name:"รถไฟตู้นอน กทม.–อุบลฯ (2 คน)", amt:2200, cat:"เดินทาง", day:0},
+  {name:"รถบัสระหว่างประเทศ อุบลฯ–ปากเซ (2 คน)", amt:400, cat:"เดินทาง", day:1},
+  {name:"รถเช่าฝั่งลาว (3 วัน)", amt:4500, cat:"เดินทาง", day:1},
+  {name:"ค่าธรรมเนียมผ่านด่าน ตม.", amt:400, cat:"เดินทาง", day:1},
   {name:"ที่พักปากซอง/ตาดฟาน", amt:1800, cat:"ที่พัก", day:1},
-  {name:"ที่พักตาดโล", amt:1500, cat:"ที่พัก", day:2},
-  {name:"ที่พักโขงเจียม", amt:1600, cat:"ที่พัก", day:3},
-  {name:"ตั๋วเครื่องบินกลับ", amt:1400, cat:"เดินทาง", day:4},
-  {name:"น้ำมันรถ", amt:2200, cat:"เดินทาง", day:3},
-  {name:"ค่าเข้าอุทยาน/น้ำตก", amt:700, cat:"ค่าเข้าชม", day:2},
-  {name:"อาหารและเครื่องดื่ม", amt:3500, cat:"อาหาร", day:2}
+  {name:"Tad Fane Zipline (2 คน)", amt:4400, cat:"กิจกรรม", day:2},
+  {name:"ค่าเข้าน้ำตกตาดเยื้อง & ตาหยิกเสือ", amt:500, cat:"ค่าเข้าชม", day:2},
+  {name:"ที่พักตัวเมืองปากเซ (คืน 2)", amt:1600, cat:"ที่พัก", day:2},
+  {name:"ค่าเข้าปราสาทหินวัดพู (2 คน)", amt:600, cat:"ค่าเข้าชม", day:3},
+  {name:"ค่าน้ำมันรถเช่าฝั่งลาว", amt:1500, cat:"เดินทาง", day:3},
+  {name:"ที่พักริมแม่น้ำโขง โขงเจียม", amt:1800, cat:"ที่พัก", day:3},
+  {name:"ค่าเข้าอุทยานฯ ผาแต้ม", amt:140, cat:"ค่าเข้าชม", day:4},
+  {name:"ตั๋วเครื่องบินกลับ กทม. (2 คน)", amt:3000, cat:"เดินทาง", day:4},
+  {name:"อาหาร เครื่องดื่ม & กาแฟตลอดทริป", amt:5000, cat:"อาหาร", day:2}
 ];
-
-/* ================= STATE ================= */
-const STORE_KEY = "ubon-bolaven-planner-v1";
-let state = load();
 
 function defaultState(){
   const schedule = {};
@@ -482,27 +486,40 @@ function defaultState(){
   return {
     schedule,
     expenses: SEED_EXPENSES.map((x,i)=>({id:"seed"+i, ...x})),
-    budget: 25000,
-    people: 3
+    budget: 30000,
+    people: 2
   };
 }
-function load(){
-  try{
-    const raw = localStorage.getItem(STORE_KEY);
-    if(raw){
-      const s = JSON.parse(raw);
-      if(s && s.schedule && s.expenses){
-        // ensure every expense has an id (older saves / seed may lack it)
-        s.expenses.forEach((e,i)=>{ if(!e.id) e.id = "e" + i + "_" + Date.now() + "_" + Math.random().toString(36).slice(2,6); });
-        if(!s.people) s.people = 3;
-        return s;
-      }
-    }
-  }catch(e){}
-  return defaultState();
-}
+
+let state = defaultState();
+
+/* ================= FIREBASE REALTIME LISTENER ================= */
+tripRef.on("value", (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    state = data;
+    if (!state.expenses) state.expenses = [];
+    if (!state.schedule) state.schedule = {};
+    DAYS_META.forEach(d => {
+      if (!state.schedule[d.id]) state.schedule[d.id] = [];
+    });
+    document.getElementById("syncStatus").innerHTML = '<span class="sync-dot"></span>ซิงก์แล้ว';
+  } else {
+    // ถ้ายังไม่มีข้อมูลใน Cloud ให้ส่ง Seed Data ขึ้นไปเป็นครั้งแรก
+    tripRef.set(defaultState());
+  }
+  renderSchedule();
+  renderBudget();
+}, (error) => {
+  console.error("Firebase Sync Error:", error);
+  document.getElementById("syncStatus").innerHTML = '⚠️ ซิงก์ไม่ผ่าน';
+  toast("เชื่อมต่อ Cloud ไม่สำเร็จ: " + error.message);
+});
+
 function save(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  tripRef.set(state)
+    .then(() => toast("บันทึกและซิงก์เรียบร้อย ☁️"))
+    .catch((err) => toast("เกิดข้อผิดพลาด: " + err.message));
 }
 
 /* ================= HELPERS ================= */
@@ -524,10 +541,6 @@ function switchTab(which){
 /* ================= HERO PHOTO ================= */
 (function(){
   const hero = document.getElementById("heroPhoto");
-  // try to reuse the user's own photo from the original poster if present
-  const imgs = document.querySelectorAll('img');
-  let found = null;
-  // gradient fallback — a stylized SVG scene
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">'
     +'<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f4a3a"/><stop offset="1" stop-color="#e2a15f"/></linearGradient></defs>'
     +'<rect width="600" height="360" fill="url(#sky)"/>'
@@ -540,22 +553,18 @@ function switchTab(which){
   hero.innerHTML = svg;
   hero.querySelector("svg").style.cssText = "width:100%;height:100%;object-fit:cover;display:block;";
 })();
+
 /* ================= RENDER SCHEDULE ================= */
 function totalForDay(dayId){
   let t = 0;
-  state.schedule[dayId].forEach(r => t += (r.c||0));
-  return t;
-}
-function totalAll(){
-  let t = 0;
-  Object.keys(state.schedule).forEach(k => t += totalForDay(+k));
+  if(state.schedule && state.schedule[dayId]) state.schedule[dayId].forEach(r => t += (r.c||0));
   return t;
 }
 
 function renderSchedule(){
   const c = document.getElementById("daysContainer");
   c.innerHTML = DAYS_META.map(d => {
-    const items = state.schedule[d.id] || [];
+    const items = (state.schedule && state.schedule[d.id]) || [];
     const open = (d.id === 0);
     const t = totalForDay(d.id);
     return `
@@ -606,11 +615,11 @@ function toggleDay(id){
 
 function updateTime(dayId, idx, val){
   state.schedule[dayId][idx].t = val || "—";
-  save(); toast("บันทึกเวลาแล้ว");
+  save();
 }
 function delRow(dayId, idx){
   state.schedule[dayId].splice(idx,1);
-  save(); renderSchedule(); toast("ลบรายการแล้ว");
+  save();
 }
 
 function startAdd(dayId){
@@ -648,8 +657,9 @@ function saveAdd(dayId){
   if(!n){ toast("กรุณากรอกกิจกรรม"); return; }
   const p = document.getElementById(`f-p-${dayId}`).value.trim();
   const c = parseFloat(document.getElementById(`f-c-${dayId}`).value) || 0;
+  if (!state.schedule[dayId]) state.schedule[dayId] = [];
   state.schedule[dayId].push({t,n,p,c});
-  save(); renderSchedule(); toast("เพิ่มกิจกรรมแล้ว");
+  save();
 }
 function saveEdit(dayId, idx){
   const it = state.schedule[dayId][idx];
@@ -657,18 +667,19 @@ function saveEdit(dayId, idx){
   it.n = document.getElementById(`f-n-${dayId}`).value.trim();
   it.p = document.getElementById(`f-p-${dayId}`).value.trim();
   it.c = parseFloat(document.getElementById(`f-c-${dayId}`).value) || 0;
-  save(); renderSchedule(); toast("บันทึกแล้ว");
+  save();
 }
+
 /* ================= RENDER BUDGET ================= */
-function expenseTotal(){ return state.expenses.reduce((s,e)=>s+(+e.amt||0),0); }
-function catTotal(cat){ return state.expenses.filter(e=>e.cat===cat).reduce((s,e)=>s+(+e.amt||0),0); }
-function dayTotal(d){ return state.expenses.filter(e=>e.day===d).reduce((s,e)=>s+(+e.amt||0),0); }
+function expenseTotal(){ return (state.expenses||[]).reduce((s,e)=>s+(+e.amt||0),0); }
+function catTotal(cat){ return (state.expenses||[]).filter(e=>e.cat===cat).reduce((s,e)=>s+(+e.amt||0),0); }
+function dayTotal(d){ return (state.expenses||[]).filter(e=>e.day===d).reduce((s,e)=>s+(+e.amt||0),0); }
 
 function renderBudget(){
   const total = expenseTotal();
   const budget = state.budget || 0;
+  const people = state.people || 2;
 
-  const people = state.people || 3;
   document.getElementById("kpiTotal").textContent = fmt(total);
   document.getElementById("kpiBudget").textContent = budget>0 ? fmt(budget) : "—";
   document.getElementById("kpiPer").textContent = fmt(total/people);
@@ -681,17 +692,15 @@ function renderBudget(){
   bar.style.width = Math.min(pct,100) + "%";
   bar.className = "fill" + (pct>=100 ? " over" : pct>=80 ? " warn" : "");
   document.getElementById("kpiBarLabel").textContent = budget>0 ? `ใช้ไปแล้ว ${Math.round(pct)}%${pct>=100?" — เกินงบ!":""}` : "ยังไม่ได้ตั้งงบประมาณ";
-  document.getElementById("kpiTotalHint").textContent = state.expenses.length + " รายการ";
+  document.getElementById("kpiTotalHint").textContent = (state.expenses ? state.expenses.length : 0) + " รายการ";
 
-  // day selector in form
   const daySel = document.getElementById("expDay");
   daySel.innerHTML = DAYS_META.map(d=>`<option value="${d.id}">Day ${d.id} · ${d.date}</option>`).join("");
 
-  // category filter
   const fc = document.getElementById("filterCat");
   fc.innerHTML = '<option value="all">ทุกหมวด</option>' + CATS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
 
-  renderCatBars(total);
+  renderCatBars();
   renderDayBars();
   renderExpenses();
   document.getElementById("heroTotal").textContent = fmt(total);
@@ -736,7 +745,7 @@ function renderExpenses(){
   const el = document.getElementById("expList");
   const fc = document.getElementById("filterCat").value;
   const fd = document.getElementById("filterDay").value;
-  let list = state.expenses.slice().reverse();
+  let list = (state.expenses || []).slice().reverse();
   if(fc!=="all") list = list.filter(e=>e.cat===fc);
   if(fd!=="all") list = list.filter(e=>String(e.day)===fd);
   if(list.length===0){ el.innerHTML = '<div class="empty">ไม่มีรายการในตัวกรองนี้</div>'; return; }
@@ -756,7 +765,7 @@ function renderExpenses(){
 }
 function delExpense(id){
   const i = state.expenses.findIndex(e=>e.id===id);
-  if(i>=0){ state.expenses.splice(i,1); save(); renderBudget(); toast("ลบรายการแล้ว"); }
+  if(i>=0){ state.expenses.splice(i,1); save(); }
 }
 function toggleExpForm(){
   const f = document.getElementById("expForm");
@@ -769,23 +778,25 @@ function addExpense(){
   if(!amt || amt<=0){ toast("กรุณากรอกจำนวนเงิน"); return; }
   const cat = document.getElementById("expCat").value;
   const day = parseInt(document.getElementById("expDay").value,10);
+  if(!state.expenses) state.expenses = [];
   state.expenses.push({ id: "e"+Date.now(), name, amt, cat, day });
   save();
   document.getElementById("expName").value="";
   document.getElementById("expAmount").value="";
   document.getElementById("expForm").style.display="none";
-  renderBudget(); toast("เพิ่มรายการแล้ว");
 }
 function setBudget(){
   const v = parseFloat(document.getElementById("budgetInput").value);
   if(!v || v<=0){ toast("กรอกงบประมาณให้ถูกต้อง"); return; }
-  state.budget = v; save(); renderBudget(); toast("ตั้งงบประมาณแล้ว");
+  state.budget = v; 
+  save();
 }
 function changePeople(d){
-  const cur = state.people || 3;
+  const cur = state.people || 2;
   const next = Math.max(1, Math.min(20, cur + d));
   if(next === cur) return;
-  state.people = next; save(); renderBudget();
+  state.people = next; 
+  save();
 }
 
 /* ================= THEME ================= */
@@ -809,10 +820,6 @@ function applyTheme(th){
     document.body.style.background = "#0E1712";
   }
 }
-
-/* ================= INIT ================= */
-renderSchedule();
-renderBudget();
 </script>
 </body>
 </html>
