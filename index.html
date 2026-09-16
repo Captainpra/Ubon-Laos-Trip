@@ -43,7 +43,8 @@ button{font-family:inherit; cursor:pointer;}
 input,select{font-family:inherit;}
 img{max-width:100%; display:block;}
 
-.app{width:100%; max-width:520px; background:var(--cream); min-height:100vh; position:relative; overflow:hidden;}
+/* FIX #7: overflow:hidden ทำให้ position:sticky ของ topbar ตาย -> ใช้ clip เฉพาะแกน X */
+.app{width:100%; max-width:520px; background:var(--cream); min-height:100vh; position:relative; overflow-x:clip;}
 
 /* TOP BAR */
 .topbar{
@@ -56,12 +57,14 @@ img{max-width:100%; display:block;}
 .topbar .brand{font-family:'Kanit',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.04em;}
 .topbar .brand small{display:block; font-size:10px; font-weight:500; color:var(--amber); letter-spacing:0.08em;}
 .topbar .actions{display:flex; gap:6px; align-items:center;}
-.sync-status{font-size:11px; color:#A7D7C5; display:flex; align-items:center; gap:4px; margin-right:4px;}
-.sync-dot{width:8px; height:8px; border-radius:50%; background:#28df99; box-shadow:0 0 8px #28df99;}
+.sync-status{font-size:11px; color:#A7D7C5; display:flex; align-items:center; gap:4px; margin-right:4px; white-space:nowrap;}
+.sync-dot{width:8px; height:8px; border-radius:50%; background:#28df99; box-shadow:0 0 8px #28df99; flex-shrink:0;}
+.sync-status.offline{color:#f0c674;}
+.sync-status.offline .sync-dot{background:#f0c674; box-shadow:0 0 8px #f0c674;}
 .icon-btn{
   width:36px; height:36px; border-radius:10px; border:1px solid rgba(255,255,255,0.2);
   background:rgba(255,255,255,0.08); color:#F2EAD9; font-size:16px;
-  display:flex; align-items:center; justify-content:center;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
 }
 .icon-btn:active{transform:scale(0.94);}
 
@@ -78,8 +81,8 @@ img{max-width:100%; display:block;}
 
 /* HERO */
 .hero{position:relative; margin:12px 16px 0; border-radius:18px; overflow:hidden; background:#111; color:#fff; min-height:200px;}
-.hero-photo{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 22%;}
-.hero-gradient{position:absolute; inset:0; background:linear-gradient(180deg, rgba(15,23,18,0.45) 0%, rgba(15,23,18,0.05) 40%, rgba(15,23,18,0.9) 100%);}
+.hero-photo{position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;}
+.hero-gradient{position:absolute; top:0; right:0; bottom:0; left:0; background:linear-gradient(180deg, rgba(15,23,18,0.45) 0%, rgba(15,23,18,0.05) 40%, rgba(15,23,18,0.9) 100%);}
 .hero-content{position:absolute; left:0; right:0; bottom:0; padding:18px 20px; z-index:2;}
 .hero-content .eyebrow{color:var(--amber); font-family:'Kanit'; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; font-weight:600;}
 .hero-title{font-family:'Taviraj',serif; font-weight:700; font-size:30px; line-height:1.1; margin-top:4px;}
@@ -98,28 +101,35 @@ img{max-width:100%; display:block;}
 .day-card{background:var(--surface); border:1px solid var(--line); border-radius:16px; margin-bottom:14px; overflow:hidden;}
 .day-card-head{display:flex; align-items:center; gap:10px; padding:14px 16px; cursor:pointer;}
 .day-dot{width:10px; height:10px; border-radius:50%; flex-shrink:0;}
-.day-card-head .dnum{font-family:'Kanit'; font-size:12px; font-weight:700; letter-spacing:0.12em; color:var(--ink-soft);}
+.day-card-head .dnum{font-family:'Kanit'; font-size:12px; font-weight:700; letter-spacing:0.12em; color:var(--ink-soft); white-space:nowrap;}
 .day-card-head .route{font-family:'Taviraj',serif; font-weight:600; font-size:18px; flex:1; line-height:1.2;}
 .day-card-head .chev{color:var(--ink-faint); transition:transform .2s; font-size:14px;}
 .day-card.open .chev{transform:rotate(180deg);}
-.day-total{font-size:12px; color:var(--ink-soft); font-weight:600; white-space:nowrap;}
 
 .timeline{padding:0 16px 4px 30px;}
-.tl-item{position:relative; padding:0 0 18px 18px; border-left:2px solid var(--line);}
+.tl-item{position:relative; padding:0 46px 18px 18px; border-left:2px solid var(--line);}
 .tl-item:last-child{border-left-color:transparent; padding-bottom:8px;}
 .tl-item::before{
   content:""; position:absolute; left:-6px; top:2px; width:10px; height:10px;
   border-radius:50%; background:var(--surface); border:2.5px solid var(--laterite);
 }
 .tl-time{font-family:'Kanit'; font-size:13px; font-weight:700; color:var(--laterite); display:flex; align-items:center; gap:6px;}
-.tl-time input{width:60px; font-size:13px; font-weight:700; color:var(--laterite); background:transparent; border:none; border-bottom:1px dashed var(--line); outline:none; font-family:'Kanit';}
+.tl-time input{width:92px; font-size:13px; font-weight:700; color:var(--laterite); background:transparent; border:none; border-bottom:1px dashed var(--line); outline:none; font-family:'Kanit';}
+.tl-time .no-time{font-size:12px; font-weight:600; color:var(--ink-faint);}
 .tl-title{font-size:15px; font-weight:600; margin-top:2px;}
 .tl-place{font-size:12.5px; color:var(--ink-soft); margin-top:1px;}
-.tl-cost{font-size:12px; color:var(--ink-faint); margin-top:2px;}
-.tl-actions{position:absolute; right:0; top:0; display:flex; gap:4px; opacity:0; transition:opacity .15s;}
-.tl-item:hover .tl-actions{opacity:1;}
-.mini-btn{width:26px; height:26px; border-radius:8px; border:1px solid var(--line); background:var(--surface-2); font-size:12px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center;}
+.tl-warn{font-size:12px; color:var(--laterite-dark); background:rgba(161,92,52,0.10); border-left:3px solid var(--laterite); padding:6px 9px; border-radius:0 8px 8px 0; margin-top:6px; line-height:1.45;}
+
+/* FIX #4: เดิมโชว์เฉพาะตอน hover -> บนมือถือกดไม่ได้เลย ตอนนี้โชว์ตลอด
+   แล้วค่อยใช้ hover เป็นลูกเล่นเฉพาะเครื่องที่มีเมาส์จริง */
+.tl-actions{position:absolute; right:0; top:0; display:flex; gap:4px;}
+@media (hover:hover) and (pointer:fine){
+  .tl-actions{opacity:0.35; transition:opacity .15s;}
+  .tl-item:hover .tl-actions{opacity:1;}
+}
+.mini-btn{width:30px; height:30px; border-radius:8px; border:1px solid var(--line); background:var(--surface-2); font-size:13px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center;}
 .mini-btn.del{color:var(--bad);}
+.mini-btn:active{transform:scale(0.92);}
 
 .add-row-btn{
   width:calc(100% - 32px); margin:0 16px 14px; padding:10px; border-radius:12px;
@@ -135,6 +145,7 @@ img{max-width:100%; display:block;}
   background:var(--surface-2); color:var(--ink); font-size:14px; outline:none;
 }
 .editor input:focus{border-color:var(--laterite);}
+.editor .hint{font-size:11.5px; color:var(--ink-faint); margin-top:-2px;}
 .editor .row{display:flex; gap:8px;}
 .editor .row input{flex:1;}
 .editor .btn-row{display:flex; gap:8px;}
@@ -149,6 +160,7 @@ img{max-width:100%; display:block;}
 .kpi .value{font-family:'Kanit'; font-size:26px; font-weight:700; margin-top:2px; letter-spacing:-0.01em;}
 .kpi .hint{font-size:11px; color:var(--ink-faint); margin-top:2px;}
 .kpi.full{grid-column:span 2;}
+.kpi .value.neg{color:var(--bad);}
 
 .people-row{display:flex; align-items:center; gap:8px; margin-top:8px;}
 .people-btn{
@@ -166,6 +178,7 @@ img{max-width:100%; display:block;}
 
 .card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:14px;}
 .card h3{font-family:'Taviraj',serif; font-weight:600; font-size:18px; margin-bottom:12px;}
+.card .note{font-size:11.5px; color:var(--ink-faint); margin-top:10px; line-height:1.5;}
 
 .legend{display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:10px;}
 .legend .lg{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft);}
@@ -189,7 +202,7 @@ img{max-width:100%; display:block;}
 .exp-table tr:last-child td{border-bottom:none;}
 .exp-table td.num{text-align:right; font-variant-numeric:tabular-nums; font-weight:700; white-space:nowrap;}
 .exp-table td.ic{width:24px;}
-.exp-del{background:none; border:none; color:var(--ink-faint); font-size:14px; padding:2px 4px;}
+.exp-del{background:none; border:none; color:var(--ink-faint); font-size:15px; padding:4px 6px;}
 .exp-del:active{color:var(--bad);}
 
 .filter-row{display:flex; gap:8px; margin-bottom:12px;}
@@ -214,6 +227,7 @@ img{max-width:100%; display:block;}
 .exp-form .btn-row{display:flex; gap:8px;}
 .exp-form .btn{flex:1; padding:10px; border-radius:10px; font-size:14px; font-weight:700; border:none;}
 .exp-form .btn.save{background:var(--forest); color:#F2EAD9;}
+.exp-form .btn.cancel{background:var(--surface); color:var(--ink-soft); border:1px solid var(--line);}
 
 .empty{text-align:center; color:var(--ink-faint); font-size:13px; padding:20px 0;}
 
@@ -228,11 +242,11 @@ img{max-width:100%; display:block;}
   position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
   background:var(--forest-deep); color:#F2EAD9; padding:10px 18px; border-radius:999px;
   font-size:13px; font-weight:600; opacity:0; pointer-events:none; transition:all .25s; z-index:99;
-  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+  box-shadow:0 8px 24px rgba(0,0,0,0.3); max-width:90vw; text-align:center;
 }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
-.footer{padding:24px 16px 30px; text-align:center; color:var(--ink-faint); font-size:11px;}
+.footer{padding:24px 16px 30px; text-align:center; color:var(--ink-faint); font-size:11px; line-height:1.6;}
 @media (min-width:520px){ .app{border-radius:0;} }
 </style>
 </head>
@@ -243,7 +257,7 @@ img{max-width:100%; display:block;}
   <div class="topbar">
     <div class="brand">UBON × PAKSE × BOLAVEN<small>TRIP PLANNER & BUDGET</small></div>
     <div class="actions">
-      <div class="sync-status" id="syncStatus"><span class="sync-dot"></span>คลาวด์พร้อม</div>
+      <div class="sync-status" id="syncStatus"><span class="sync-dot"></span>กำลังเชื่อมต่อ</div>
       <button class="icon-btn" id="themeBtn" title="สลับธีม">🌙</button>
     </div>
   </div>
@@ -274,12 +288,15 @@ img{max-width:100%; display:block;}
     <div class="section-pad">
       <div class="section-title">
         <h2>ตารางแต่ละวัน</h2>
-        <span class="sub">แก้ไขแล้วซิงก์ทุกเครื่องทันที</span>
+        <span class="sub">แก้ไขแล้วซิงก์ทุกเครื่อง</span>
       </div>
       <div id="daysContainer"></div>
     </div>
 
-    <div class="footer">เชื่อมต่อ Firebase Realtime Database ซิงก์ข้อมูลอัตโนมัติ</div>
+    <div class="footer">
+      ค่าใช้จ่ายทั้งหมดจัดการในแท็บ Dashboard เพื่อให้ยอดรวมมีแหล่งข้อมูลเดียว<br>
+      แก้ไขจะบันทึกลงเครื่องทันที และซิงก์ขึ้นคลาวด์เมื่อมีสัญญาณ
+    </div>
   </div>
 
   <!-- ============ BUDGET VIEW ============ -->
@@ -325,7 +342,7 @@ img{max-width:100%; display:block;}
       <div class="card">
         <h3>ตั้งงบประมาณรวม</h3>
         <div class="budget-row">
-          <input type="number" id="budgetInput" placeholder="เช่น 30000" inputmode="numeric">
+          <input type="number" id="budgetInput" placeholder="เช่น 40000" inputmode="numeric">
           <button class="btn" onclick="setBudget()">บันทึก</button>
         </div>
       </div>
@@ -341,18 +358,15 @@ img{max-width:100%; display:block;}
       <div class="card">
         <h3>ค่าใช้จ่ายตามวัน</h3>
         <div id="dayBars"></div>
+        <div class="note" id="unassignedNote"></div>
       </div>
 
       <!-- EXPENSE LIST -->
       <div class="card">
         <h3>รายการค่าใช้จ่าย</h3>
         <div class="filter-row">
-          <select id="filterCat" onchange="renderExpenses()">
-            <option value="all">ทุกหมวด</option>
-          </select>
-          <select id="filterDay" onchange="renderExpenses()">
-            <option value="all">ทุกวัน</option>
-          </select>
+          <select id="filterCat" onchange="renderExpenses()"></select>
+          <select id="filterDay" onchange="renderExpenses()"></select>
         </div>
         <button class="add-exp-btn" onclick="toggleExpForm()">＋ เพิ่มรายการค่าใช้จ่าย</button>
         <div class="exp-form" id="expForm" style="display:none;">
@@ -361,11 +375,7 @@ img{max-width:100%; display:block;}
             <input type="number" id="expAmount" placeholder="จำนวนเงิน (฿)" inputmode="numeric">
           </div>
           <div class="row">
-            <select id="expCat">
-              <option>เดินทาง</option><option>ที่พัก</option><option>อาหาร</option>
-              <option>กิจกรรม</option><option>ค่าเข้าชม</option><option>ช้อปปิ้ง</option>
-              <option>อื่น ๆ</option>
-            </select>
+            <select id="expCat"></select>
             <select id="expDay"></select>
           </div>
           <div class="btn-row">
@@ -374,6 +384,10 @@ img{max-width:100%; display:block;}
           </div>
         </div>
         <div id="expList"></div>
+        <div class="note">
+          ค่าใช้จ่ายฝั่งลาวหลายรายการคิดเป็นกีบหรือดอลลาร์ — แนะนำให้แปลงเป็นบาทก่อนกรอก
+          แล้วจดอัตราที่ใช้ไว้ในชื่อรายการ เพื่อให้ยอดรวมเทียบกันได้
+        </div>
       </div>
 
     </div>
@@ -396,130 +410,246 @@ const firebaseConfig = {
   appId: "1:1067737286118:web:7fb191d74f30e87ee30227"
 };
 
-// เริ่มการทำงาน Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const tripRef = db.ref("trip_data");
+/* หมายเหตุความปลอดภัย:
+   apiKey ของ Firebase ไม่ใช่ความลับ (เป็น public identifier ตาม design)
+   ตัวที่กันข้อมูลจริงคือ Database Rules — ถ้ายังเป็น test mode
+   (.read/.write = true) ใครที่ได้ URL ไปจะอ่าน/ลบข้อมูลได้ และ rules
+   แบบ test จะหมดอายุใน 30 วัน ทำให้ซิงก์พังเงียบ ๆ ก่อนถึงวันเดินทาง
+   แนะนำ: เปิด Anonymous Auth แล้วตั้ง rule เป็น "auth != null" */
+
+let db = null, tripRef = null, firebaseOK = false;
+try{
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  tripRef = db.ref("trip_data");
+  firebaseOK = true;
+}catch(e){
+  console.error("Firebase init failed:", e);
+}
+
+const LS_KEY = "ubon-bolaven-state-v2";
 
 /* ================= DATA META & SEED ================= */
 const DAYS_META = [
   {id:0, date:"21 ต.ค.", route:"กรุงเทพฯ → อุบลราชธานี", color:"#E2914A", mood:"🌙 Night Train", stay:"บนรถไฟตู้นอน"},
   {id:1, date:"22 ต.ค.", route:"อุบลฯ → ปากเซ → โบลาเวน", color:"#A15C34", mood:"🚗 Cross Border & Chill", stay:"ปากซอง / ตาดฟาน"},
   {id:2, date:"23 ต.ค.", route:"โบลาเวน → ปากเซ", color:"#7C4526", mood:"🧗 Zipline & Jungle Trail", stay:"ตัวเมืองปากเซ"},
-  {id:3, date:"24 ต.ค.", route:"ปากเซ → วัดพู → โขงเจียม", color:"#45606B", mood:"🏛️ Heritage & Mekong Sunset", stay:"ริมแม่น้ำโขง โขงเจียม"},
+  {id:3, date:"24 ต.ค.", route:"ปากเซ → วัดพู → โขงเจียม", color:"#45606B", mood:"🏛️ Heritage & Glowing Tree", stay:"ริมแม่น้ำโขง โขงเจียม"},
   {id:4, date:"25 ต.ค.", route:"ผาแต้ม → อุบลฯ → กรุงเทพฯ", color:"#C97B63", mood:"🌅 Pha Taem Sunrise", stay:"✈️ บินกลับกรุงเทพฯ"}
 ];
+
+const UNASSIGNED = -1; /* สำหรับค่าใช้จ่ายที่ไม่ผูกกับวันใดวันหนึ่ง */
 
 const CATS = ["เดินทาง","ที่พัก","อาหาร","กิจกรรม","ค่าเข้าชม","ช้อปปิ้ง","อื่น ๆ"];
 const CAT_COLORS = ["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4","#008300","#9C9182"];
 const CAT_ICONS = ["🚗","🏨","🍜","🎯","🎫","🛍️","📦"];
 
+/* t = "HH:MM" หรือ "" (ไม่ระบุเวลา) — ไม่ใช้ "—" แล้ว เพราะ <input type="time"> รับไม่ได้
+   w = คำเตือน/สิ่งที่ต้องยืนยันล่วงหน้า */
 const SEED_SCHEDULE = {
   0:[
-    {t:"20:30", n:"ขึ้นรถไฟตู้นอนจากกรุงเทพฯ", p:"สถานีกลางกรุงเทพอภิวัฒน์", c:0},
-    {t:"—", n:"นอนบนรถไฟ ปล่อยให้รางพาไป", p:"ขบวนรถไฟสายอีสาน", c:0},
-    {t:"06:30", n:"ตื่นเช้า เตรียมลงสถานีอุบลราชธานี", p:"สถานีรถไฟอุบลราชธานี", c:0}
+    {t:"20:30", n:"ขึ้นรถไฟตู้นอนจากกรุงเทพฯ", p:"สถานีกลางกรุงเทพอภิวัฒน์"},
+    {t:"", n:"นอนบนรถไฟตลอดคืน", p:"ขบวนรถไฟสายอีสาน"},
+    {t:"06:30", n:"ตื่นเช้า เตรียมลงสถานีอุบลราชธานี", p:"สถานีรถไฟอุบลราชธานี"}
   ],
   1:[
-    {t:"06:30", n:"ถึงสถานีรถไฟอุบลฯ ข้ามไป บขส. อุบลฯ", p:"สถานีรถไฟอุบลฯ → บขส. อุบลฯ", c:0},
-    {t:"09:30", n:"ขึ้นรถบัสระหว่างประเทศ อุบลฯ → ปากเซ", p:"บขส. อุบลราชธานี", c:0},
-    {t:"11:30", n:"ผ่านพิธีการด่าน ตม. ไทย–ลาว (รถบัสรอ)", p:"ด่านช่องเม็ก → วังเต่า", c:0},
-    {t:"12:30", n:"ถึงเมืองปากเซ & มื้อกลางวันเร็วๆ", p:"ตัวเมืองปากเซ", c:0},
-    {t:"13:30", n:"รับรถเช่าพวงมาลัยซ้าย ขับขึ้นโบลาเวน", p:"ปากเซ → ปากซอง (สาย 16E)", c:0},
-    {t:"15:00", n:"CC1971 Cafe จิบกาแฟโรงคั่วเก่าสุดคลาสสิก", p:"ปากซอง", c:0},
-    {t:"17:00", n:"เช็คอินที่พัก สัมผัสอากาศเย็นเมืองหนาว", p:"ปากซอง / ตาดฟาน", c:0},
-    {t:"18:30", n:"มื้อค่ำ พักผ่อนเอาแรงเตรียมลุยพรุ่งนี้", p:"ร้านอาหารท้องถิ่นปากซอง", c:0}
+    {t:"06:30", n:"ถึงสถานีรถไฟอุบลฯ → ต่อรถไป บขส. อุบลฯ", p:"สถานีรถไฟอุบลฯ → บขส. อุบลฯ",
+     w:"จุดเปราะที่สุดของทริป: รถไฟสายอีสานดีเลย์ 1–2 ชม. เป็นเรื่องปกติ ถ้าดีเลย์เกิน 1 ชม. ให้ทิ้งรอบบัส 09:30 แล้วเหมารถตรงไปช่องเม็กแทน — หาเบอร์รถเหมาไว้ล่วงหน้า"},
+    {t:"09:30", n:"รถบัสระหว่างประเทศ อุบลฯ → ปากเซ", p:"บขส. อุบลราชธานี (ออกทุกวัน ~3 ชม. / 138 กม.)"},
+    {t:"11:30", n:"ผ่านพิธีการด่าน ตม. ไทย–ลาว", p:"ด่านช่องเม็ก → วังเต่า"},
+    {t:"12:30", n:"ถึงเมืองปากเซ รับรถเช่าพวงมาลัยซ้าย + มื้อเที่ยง", p:"ตัวเมืองปากเซ",
+     w:"ยืนยันกับบริษัทเช่ารถว่าใช้ใบขับขี่ไทยได้ และขอเอกสารประกันรถให้ครบก่อนออกรถ"},
+    {t:"13:30", n:"ขับขึ้นที่ราบสูงโบลาเวน ตามเส้นทาง 16E", p:"ปากเซ → ปากซอง"},
+    {t:"14:30", n:"💦 น้ำตกตาดเยื้อง (Tad Yuang) เดินสะพานไม้ชมละอองน้ำ", p:"ตาดเยื้อง (หลัก 40)"},
+    {t:"16:00", n:"☕ CC1971 Cafe โรงคั่วกาแฟเก่าสุดคลาสสิก", p:"ปากซอง"},
+    {t:"17:30", n:"เช็คอิน Give Garden สัมผัสอากาศเย็นบนที่ราบสูง", p:"ปากซอง"},
+    {t:"19:00", n:"มื้อค่ำ พักผ่อนเอาแรงเตรียมลุยพรุ่งนี้", p:"ร้านอาหารท้องถิ่นปากซอง"}
   ],
   2:[
-    {t:"08:00", n:"เดินทางสู่อุทยานน้ำตกตาดฟาน", p:"ตาดฟาน (หลัก 38)", c:0},
-    {t:"08:30", n:"🧗 Tad Fane Zipline โหนสลิงข้ามเหวน้ำตกคู่", p:"น้ำตกตาดฟาน", c:0},
-    {t:"10:45", n:"CPC Cafe (หลัก 40) ชิมกาแฟ Specialty สหกรณ์", p:"Bolaven Coffee Cooperative (Lak 40)", c:0},
-    {t:"12:00", n:"น้ำตกตาดเยื้อง & อาหารกลางวัน", p:"น้ำตกตาดเยื้อง (Lak 40)", c:0},
-    {t:"13:30", n:"🥾 เทรลน้ำตกตาดตาเก็ดเสือ (ตาดตาหยิกเสือ)", p:"บ้านหนองหลวง / ดงหัวสาว", c:0},
-    {t:"16:30", n:"ขับรถลงจากที่ราบสูงโบลาเวน สู่ปากเซ", p:"เส้นทาง 16E → เมืองปากเซ", c:0},
-    {t:"18:00", n:"เช็คอินโรงแรมในเมืองปากเซ", p:"ตัวเมืองปากเซ (ริมน้ำโขง)", c:0},
-    {t:"19:00", n:"อาหารค่ำริมแม่น้ำโขง รับลมเย็นฟื้นฟูร่างกาย", p:"ร้านอาหารริมโขง ปากเซ", c:0}
+    {t:"07:30", n:"มื้อเช้าที่พัก", p:"ปากซอง"},
+    {t:"08:00", n:"☕ Jhai Coffee House จิบ Specialty ยามเช้า", p:"ปากซอง"},
+    {t:"08:45", n:"🧗 Tad Fane Zipline โหนสลิงข้ามเหวน้ำตกคู่", p:"น้ำตกตาดฟาน (หลัก 38)",
+     w:"จองล่วงหน้าและเช็คน้ำหนัก/เงื่อนไขผู้เล่น — รอบเช้าอากาศเปิดกว่าและปลอดภัยกว่ารอบบ่าย"},
+    {t:"10:45", n:"☕ CPC Cafe ชิม/ซื้อเมล็ดกาแฟสหกรณ์โบลาเวน", p:"Bolaven Coffee Cooperative (หลัก 40)"},
+    {t:"12:00", n:"มื้อกลางวัน", p:"ปากซอง / หลัก 40"},
+    {t:"13:00", n:"🥾 เทรลป่าดิบ น้ำตกตาดตาเก็ดเสือ", p:"บ้านหนองหลวง / ดงหัวสาว",
+     w:"ปรับจากแผนเดิม 3.5 ชม. เหลือ ~2.5 ชม. เพื่อเลี่ยงการขับลงเขา 16E ตอนแสงหมด (ปลาย ต.ค. มืดราว 18:00)"},
+    {t:"15:30", n:"ออกจากเทรล ขับลงจากที่ราบสูงสู่ปากเซ", p:"เส้นทาง 16E → เมืองปากเซ"},
+    {t:"17:00", n:"เช็คอินโรงแรมในเมืองปากเซ", p:"ตัวเมืองปากเซ (ริมน้ำโขง)"},
+    {t:"19:00", n:"อาหารค่ำริมแม่น้ำโขง ฟื้นฟูร่างกาย", p:"ร้านอาหารริมโขง ปากเซ"}
   ],
   3:[
-    {t:"08:00", n:"อาหารเช้า & เช็คเอาท์โรงแรมปากเซ", p:"ตัวเมืองปากเซ", c:0},
-    {t:"08:45", n:"ขับรถข้ามสะพานมิตรภาพลาว-ญี่ปุ่น ลงใต้", p:"ปากเซ → จำปาสัก", c:0},
-    {t:"09:30", n:"🏛️ ปราสาทหินวัดพู มรดกโลกริมภูเก้า", p:"เมืองจำปาสัก", c:0},
-    {t:"12:00", n:"อาหารกลางวันริมแม่น้ำโขง จำปาสัก", p:"เมืองจำปาสัก", c:0},
-    {t:"13:30", n:"ขับกลับปากเซ คืนรถเช่า & นั่งรถไปด่านวังเต่า", p:"ตัวเมืองปากเซ", c:0},
-    {t:"14:30", n:"ผ่านด่าน ตม. วังเต่า–ช่องเม็ก ข้ามกลับไทย", p:"ด่านช่องเม็ก", c:0},
-    {t:"15:30", n:"เดินทางจากช่องเม็ก สู่ อ.โขงเจียม", p:"ช่องเม็ก → โขงเจียม", c:0},
-    {t:"17:00", n:"ชมพระอาทิตย์ตก & บรรยากาศริมแม่น้ำโขง", p:"ริมน้ำโขงเจียม", c:0},
-    {t:"18:30", n:"อาหารเย็นริมโขง & เช็คอินที่พักผ่อนคลาย", p:"โขงเจียม", c:0}
+    {t:"08:00", n:"อาหารเช้า & เช็คเอาท์โรงแรมปากเซ", p:"ตัวเมืองปากเซ"},
+    {t:"08:45", n:"ขับข้ามสะพานมิตรภาพลาว–ญี่ปุ่น ลงใต้สู่จำปาสัก", p:"ปากเซ → จำปาสัก (~45 กม.)"},
+    {t:"09:30", n:"🏛️ ปราสาทหินวัดพู มรดกโลกริมเชิงภูเก้า", p:"เมืองจำปาสัก"},
+    {t:"11:30", n:"มื้อกลางวันริมแม่น้ำโขง", p:"เมืองจำปาสัก"},
+    {t:"12:30", n:"ขับกลับปากเซ & คืนรถเช่าฝั่งลาว", p:"ตัวเมืองปากเซ"},
+    {t:"13:30", n:"ต่อรถจากปากเซไปด่านวังเต่า", p:"ปากเซ → วังเต่า (~45 กม.)"},
+    {t:"14:30", n:"ผ่านด่าน ตม. วังเต่า–ช่องเม็ก ข้ามกลับไทย", p:"ด่านช่องเม็ก"},
+    {t:"15:00", n:"🚗 รับรถเช่าฝั่งไทยที่ด่านช่องเม็ก", p:"ด่านช่องเม็ก",
+     w:"ความเสี่ยงอันดับ 1 ของทริป: ร้านเช่ารถเกือบทั้งหมดอยู่ในเมืองอุบลฯ/สนามบิน ที่ช่องเม็กส่วนใหญ่เป็นรถเหมา ไม่ใช่เคาน์เตอร์ walk-up — ต้องจองล่วงหน้าให้ขับมาส่งที่ด่าน และขอยืนยันเป็นข้อความว่ามากี่โมง จุดไหน ถ้าหาไม่ได้ ให้เปลี่ยนเป็นเหมารถ+คนขับคลุมช่วง ช่องเม็ก→วัดภูพร้าว→โขงเจียม→ผาแต้ม→สนามบิน"},
+    {t:"17:00", n:"🛕 วัดสิรินธรวรารามภูพร้าว ชมวิวอ่างเก็บน้ำเขื่อนสิรินธร", p:"อ.สิรินธร จ.อุบลราชธานี"},
+    {t:"18:15", n:"✨ ต้นกัลปพฤกษ์เรืองแสงยามค่ำคืน", p:"วัดภูพร้าว"},
+    {t:"19:00", n:"ขับสู่ อ.โขงเจียม เช็คอินที่พักริมแม่น้ำโขง", p:"วัดภูพร้าว → โขงเจียม",
+     w:"เช็คระยะจริงใน Google Maps อีกครั้ง — แผนเดิมเผื่อไว้ 45 นาที ซึ่งอาจน้อยไปสำหรับการขับกลางคืน"},
+    {t:"20:00", n:"มื้อค่ำริมโขง พักผ่อน", p:"อ.โขงเจียม"}
   ],
   4:[
-    {t:"05:30", n:"ออกเดินทางเช้าตรู่ สู่ผาแต้ม", p:"โขงเจียม → อุทยานแห่งชาติผาแต้ม", c:0},
-    {t:"06:00", n:"🌅 จุดชมวิวผาแต้ม ชมแสงแรกรับอรุณริมหน้าผา", p:"ผาแต้ม", c:0},
-    {t:"07:00", n:"เดินชมเสาเฉลียง & เส้นทางภาพเขียนสีโบราณ", p:"อุทยานแห่งชาติผาแต้ม", c:0},
-    {t:"09:00", n:"อาหารเช้า & แวะคาเฟ่ริมโขงเจียม", p:"อ.โขงเจียม", c:0},
-    {t:"10:30", n:"ขับรถเดินทางกลับเข้าตัวเมืองอุบลฯ", p:"โขงเจียม → เมืองอุบลฯ", c:0},
-    {t:"12:00", n:"อาหารกลางวัน & แวะคาเฟ่ตัวเมืองอุบลฯ", p:"ตัวเมืองอุบลราชธานี", c:0},
-    {t:"14:30", n:"คืนรถเช่าฝั่งไทย & เดินทางถึงสนามบิน", p:"สนามบินอุบลราชธานี", c:0},
-    {t:"17:15", n:"✈️ บินกลับกรุงเทพฯ ด้วยความประทับใจ", p:"สนามบินอุบลราชธานี (UBP)", c:0}
+    {t:"05:30", n:"ออกเดินทางเช้าตรู่สู่ผาแต้ม", p:"โขงเจียม → อุทยานแห่งชาติผาแต้ม (~20 กม.)",
+     w:"โทรถามอุทยานก่อนว่าเปิดให้เข้าก่อนพระอาทิตย์ขึ้นได้ไหม (ปลาย ต.ค. ตะวันขึ้นราว 06:10) และย้ำว่านี่คือจุดชมวิวผาแต้ม ไม่ใช่ผาชะนะได ซึ่งอยู่คนละโซนและมีรอบขึ้น-ลงกำหนดไว้"},
+    {t:"06:00", n:"🌅 จุดชมวิวผาแต้ม ชมแสงแรกริมหน้าผา", p:"ผาแต้ม"},
+    {t:"07:00", n:"🪨 เสาเฉลียง & เส้นทางภาพเขียนสีโบราณ", p:"อุทยานแห่งชาติผาแต้ม"},
+    {t:"09:00", n:"อาหารเช้า & คาเฟ่ริมโขงเจียม", p:"อ.โขงเจียม"},
+    {t:"10:30", n:"ขับรถกลับเข้าตัวเมืองอุบลฯ", p:"โขงเจียม → เมืองอุบลฯ"},
+    {t:"12:00", n:"🍜 มื้อเที่ยงก๋วยจั๊บญวน & แวะคาเฟ่ในเมือง", p:"ตัวเมืองอุบลราชธานี"},
+    {t:"14:30", n:"คืนรถเช่าฝั่งไทย & เดินทางถึงสนามบิน", p:"สนามบินอุบลราชธานี (UBP)"},
+    {t:"17:15", n:"✈️ บินกลับกรุงเทพฯ", p:"สนามบินอุบลราชธานี (UBP)"}
   ]
 };
 
+/* งบเริ่มต้นตั้งไว้ 40,000 และเติมรายการที่แผนเดิมตกหล่น
+   (รถเช่าฝั่งไทย น้ำมันฝั่งไทย รถรับส่ง ของฝาก เงินสำรอง)
+   ตัวเลขเหล่านี้เป็น "ค่าประมาณเพื่อตั้งต้น" ต้องยืนยันราคาจริงก่อนจอง */
 const SEED_EXPENSES = [
   {name:"รถไฟตู้นอน กทม.–อุบลฯ (2 คน)", amt:2200, cat:"เดินทาง", day:0},
+  {name:"รถรับส่ง สถานีรถไฟ → บขส. อุบลฯ", amt:150, cat:"เดินทาง", day:1},
   {name:"รถบัสระหว่างประเทศ อุบลฯ–ปากเซ (2 คน)", amt:400, cat:"เดินทาง", day:1},
-  {name:"รถเช่าฝั่งลาว (3 วัน)", amt:4500, cat:"เดินทาง", day:1},
   {name:"ค่าธรรมเนียมผ่านด่าน ตม.", amt:400, cat:"เดินทาง", day:1},
-  {name:"ที่พักปากซอง/ตาดฟาน", amt:1800, cat:"ที่พัก", day:1},
-  {name:"Tad Fane Zipline (2 คน)", amt:4400, cat:"กิจกรรม", day:2},
-  {name:"ค่าเข้าน้ำตกตาดเยื้อง & ตาหยิกเสือ", amt:500, cat:"ค่าเข้าชม", day:2},
-  {name:"ที่พักตัวเมืองปากเซ (คืน 2)", amt:1600, cat:"ที่พัก", day:2},
-  {name:"ค่าเข้าปราสาทหินวัดพู (2 คน)", amt:600, cat:"ค่าเข้าชม", day:3},
+  {name:"รถเช่าฝั่งลาว (3 วัน)", amt:4500, cat:"เดินทาง", day:1},
+  {name:"ที่พักปากซอง (Give Garden)", amt:1800, cat:"ที่พัก", day:1},
+  {name:"อาหาร & เครื่องดื่ม Day 1", amt:800, cat:"อาหาร", day:1},
+  {name:"Tad Fane Zipline (2 คน) — ยืนยันราคา", amt:4400, cat:"กิจกรรม", day:2},
+  {name:"ค่าเข้าน้ำตกตาดเยื้อง & ตาดตาเก็ดเสือ", amt:500, cat:"ค่าเข้าชม", day:2},
+  {name:"ที่พักตัวเมืองปากเซ", amt:1600, cat:"ที่พัก", day:2},
+  {name:"อาหาร & กาแฟ Day 2", amt:1200, cat:"อาหาร", day:2},
+  {name:"เมล็ดกาแฟ & ของฝาก", amt:1500, cat:"ช้อปปิ้ง", day:2},
   {name:"ค่าน้ำมันรถเช่าฝั่งลาว", amt:1500, cat:"เดินทาง", day:3},
+  {name:"ค่าเข้าปราสาทหินวัดพู (2 คน)", amt:600, cat:"ค่าเข้าชม", day:3},
+  {name:"รถ ปากเซ → ด่านวังเต่า", amt:400, cat:"เดินทาง", day:3},
+  {name:"รถเช่าฝั่งไทย 2 วัน + ค่าส่งรถที่ด่าน", amt:2600, cat:"เดินทาง", day:3},
   {name:"ที่พักริมแม่น้ำโขง โขงเจียม", amt:1800, cat:"ที่พัก", day:3},
-  {name:"ค่าเข้าอุทยานฯ ผาแต้ม", amt:140, cat:"ค่าเข้าชม", day:4},
+  {name:"อาหาร Day 3", amt:1200, cat:"อาหาร", day:3},
+  {name:"ค่าเข้าอุทยานฯ ผาแต้ม (+ค่ารถ)", amt:140, cat:"ค่าเข้าชม", day:4},
+  {name:"ค่าน้ำมันฝั่งไทย", amt:800, cat:"เดินทาง", day:4},
+  {name:"อาหาร Day 4", amt:900, cat:"อาหาร", day:4},
   {name:"ตั๋วเครื่องบินกลับ กทม. (2 คน)", amt:3000, cat:"เดินทาง", day:4},
-  {name:"อาหาร เครื่องดื่ม & กาแฟตลอดทริป", amt:5000, cat:"อาหาร", day:2}
+  {name:"เงินสำรองฉุกเฉิน", amt:3000, cat:"อื่น ๆ", day:UNASSIGNED}
 ];
 
 function defaultState(){
   const schedule = {};
   DAYS_META.forEach(d => schedule[d.id] = (SEED_SCHEDULE[d.id]||[]).map(x=>({...x})));
-  return {
-    schedule,
-    expenses: SEED_EXPENSES.map((x,i)=>({id:"seed"+i, ...x})),
-    budget: 30000,
-    people: 2
-  };
+  const expenses = {};
+  SEED_EXPENSES.forEach((x,i)=>{ const id = "seed"+i; expenses[id] = {id, ts:i, ...x}; });
+  return { schedule, expenses, budget:40000, people:2 };
 }
 
+/* ================= STATE ================= */
 let state = defaultState();
+/* FIX #1: จำว่าการ์ดไหนเปิดอยู่ ไม่ให้ re-render ยุบกลับไป Day 0 ทุกครั้ง */
+let openDays = new Set([0]);
+/* กัน echo ของตัวเอง: ถ้า snapshot ที่เข้ามา = สิ่งที่เราเพิ่งเขียนไป ก็ไม่ต้อง render ใหม่ */
+let lastPushed = null;
+let didFirstRender = false;
 
-/* ================= FIREBASE REALTIME LISTENER ================= */
-tripRef.on("value", (snapshot) => {
-  const data = snapshot.val();
-  if (data) {
-    state = data;
-    if (!state.expenses) state.expenses = [];
-    if (!state.schedule) state.schedule = {};
-    DAYS_META.forEach(d => {
-      if (!state.schedule[d.id]) state.schedule[d.id] = [];
+/* FIX #10 + normalize: รองรับข้อมูลเก่าที่ expenses เป็น array
+   และ schedule ที่ยังใช้ t:"—" */
+function normalize(raw){
+  const s = { schedule:{}, expenses:{}, budget:0, people:2 };
+  if(!raw || typeof raw !== "object") return defaultState();
+
+  DAYS_META.forEach(d=>{
+    let arr = raw.schedule ? raw.schedule[d.id] : null;
+    if(!Array.isArray(arr)) arr = arr && typeof arr==="object" ? Object.values(arr) : [];
+    s.schedule[d.id] = arr.filter(Boolean).map(it=>({
+      t: (it.t === "—" || it.t == null) ? "" : String(it.t),
+      n: it.n || "",
+      p: it.p || "",
+      w: it.w || ""
+    }));
+  });
+
+  const rawExp = raw.expenses;
+  if(Array.isArray(rawExp)){
+    rawExp.filter(Boolean).forEach((e,i)=>{
+      const id = e.id || ("m"+i);
+      s.expenses[id] = {id, ts: e.ts != null ? e.ts : i, name:e.name||"", amt:+e.amt||0,
+                        cat:e.cat||"อื่น ๆ", day: e.day==null ? UNASSIGNED : +e.day};
     });
-    document.getElementById("syncStatus").innerHTML = '<span class="sync-dot"></span>ซิงก์แล้ว';
-  } else {
-    // ถ้ายังไม่มีข้อมูลใน Cloud ให้ส่ง Seed Data ขึ้นไปเป็นครั้งแรก
-    tripRef.set(defaultState());
+  } else if(rawExp && typeof rawExp === "object"){
+    Object.keys(rawExp).forEach((k,i)=>{
+      const e = rawExp[k]; if(!e) return;
+      s.expenses[k] = {id:k, ts: e.ts != null ? e.ts : i, name:e.name||"", amt:+e.amt||0,
+                       cat:e.cat||"อื่น ๆ", day: e.day==null ? UNASSIGNED : +e.day};
+    });
   }
-  renderSchedule();
-  renderBudget();
-}, (error) => {
-  console.error("Firebase Sync Error:", error);
-  document.getElementById("syncStatus").innerHTML = '⚠️ ซิงก์ไม่ผ่าน';
-  toast("เชื่อมต่อ Cloud ไม่สำเร็จ: " + error.message);
-});
 
-function save(){
-  tripRef.set(state)
-    .then(() => toast("บันทึกและซิงก์เรียบร้อย ☁️"))
-    .catch((err) => toast("เกิดข้อผิดพลาด: " + err.message));
+  s.budget = +raw.budget || 0;
+  s.people = Math.max(1, +raw.people || 2);
+  return s;
+}
+
+/* ================= PERSISTENCE ================= */
+/* FIX #3: mirror ลง localStorage ทุกครั้ง เพื่อให้ใช้งานได้ตอนไม่มีสัญญาณ
+   (RTDB บนเว็บไม่มี disk persistence — อันนั้นคือ Firestore) */
+function saveLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+}
+function loadLocal(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? normalize(JSON.parse(raw)) : null;
+  }catch(e){ return null; }
+}
+
+function setSync(text, offline){
+  const el = document.getElementById("syncStatus");
+  el.className = "sync-status" + (offline ? " offline" : "");
+  el.innerHTML = '<span class="sync-dot"></span>' + text;
+}
+
+/* FIX #2: เขียนเฉพาะ path ที่แตะ แทนการ set() ทับทั้งก้อน
+   ลดโอกาสที่สองเครื่องแก้พร้อมกันแล้วทับกันหาย */
+function pushAt(path, value){
+  saveLocal();
+  lastPushed = JSON.stringify(state);
+  if(!firebaseOK){ setSync("ออฟไลน์ (เก็บในเครื่อง)", true); return; }
+  const ref = tripRef.child(path);
+  const op = (value === null) ? ref.remove() : ref.set(value);
+  op.then(()=>{
+    setSync("ซิงก์แล้ว", false);
+  }).catch((err)=>{
+    setSync("ออฟไลน์ (เก็บในเครื่อง)", true);
+    toast("ซิงก์ไม่สำเร็จ — บันทึกในเครื่องแล้ว");
+    console.warn("sync failed:", err && err.message);
+  });
+}
+function pushDay(dayId){ pushAt("schedule/"+dayId, state.schedule[dayId]); }
+function pushExpense(id){ pushAt("expenses/"+id, state.expenses[id] || null); }
+
+/* ================= FIREBASE LISTENER ================= */
+function attachListener(){
+  if(!firebaseOK){ setSync("ออฟไลน์ (เก็บในเครื่อง)", true); return; }
+  tripRef.on("value", (snapshot)=>{
+    const data = snapshot.val();
+    if(!data){
+      const seed = state;
+      tripRef.set(seed).catch(()=>{});
+      setSync("ซิงก์แล้ว", false);
+      return;
+    }
+    const incoming = normalize(data);
+    const incomingStr = JSON.stringify(incoming);
+    setSync("ซิงก์แล้ว", false);
+    if(incomingStr === lastPushed && didFirstRender) return; /* echo ของเราเอง */
+    state = incoming;
+    saveLocal();
+    renderAll();
+  }, (error)=>{
+    console.error("Firebase Sync Error:", error);
+    setSync("ออฟไลน์ (เก็บในเครื่อง)", true);
+    toast("เชื่อมต่อคลาวด์ไม่ได้ — ใช้ข้อมูลในเครื่องต่อได้");
+  });
 }
 
 /* ================= HELPERS ================= */
@@ -528,20 +658,24 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;
 function toast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
-  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 1800);
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 2000);
 }
 function switchTab(which){
   document.getElementById("view-schedule").style.display = which==="schedule" ? "block":"none";
   document.getElementById("view-budget").style.display = which==="budget" ? "block":"none";
   document.getElementById("tabSchedule").classList.toggle("active", which==="schedule");
   document.getElementById("tabBudget").classList.toggle("active", which==="budget");
-  if(which==="budget") renderBudget();
+}
+function dayLabelOf(d){
+  if(+d === UNASSIGNED) return "ไม่ระบุวัน";
+  const m = DAYS_META.find(x=>x.id === +d);
+  return m ? m.date : "—";
 }
 
-/* ================= HERO PHOTO ================= */
+/* ================= HERO ================= */
 (function(){
   const hero = document.getElementById("heroPhoto");
-  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">'
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid slice">'
     +'<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f4a3a"/><stop offset="1" stop-color="#e2a15f"/></linearGradient></defs>'
     +'<rect width="600" height="360" fill="url(#sky)"/>'
     +'<circle cx="470" cy="80" r="40" fill="#f2c98a" opacity="0.9"/>'
@@ -549,31 +683,22 @@ function switchTab(which){
     +'<path d="M0 290 L150 210 L280 290 L420 230 L600 300 L600 360 L0 360 Z" fill="#12241c"/>'
     +'<g stroke="#e2a15f" stroke-width="2" opacity="0.7"><path d="M80 300 q8 -18 0 -36"/><path d="M500 300 q8 -18 0 -36"/></g>'
     +'</svg>';
-  hero.style.background = "none";
   hero.innerHTML = svg;
-  hero.querySelector("svg").style.cssText = "width:100%;height:100%;object-fit:cover;display:block;";
+  hero.querySelector("svg").style.cssText = "width:100%;height:100%;display:block;";
 })();
 
 /* ================= RENDER SCHEDULE ================= */
-function totalForDay(dayId){
-  let t = 0;
-  if(state.schedule && state.schedule[dayId]) state.schedule[dayId].forEach(r => t += (r.c||0));
-  return t;
-}
-
 function renderSchedule(){
   const c = document.getElementById("daysContainer");
   c.innerHTML = DAYS_META.map(d => {
-    const items = (state.schedule && state.schedule[d.id]) || [];
-    const open = (d.id === 0);
-    const t = totalForDay(d.id);
+    const items = state.schedule[d.id] || [];
+    const open = openDays.has(d.id);
     return `
     <div class="day-card ${open?'open':''}" data-day="${d.id}">
       <div class="day-card-head" onclick="toggleDay(${d.id})">
         <span class="day-dot" style="background:${d.color}"></span>
         <span class="dnum">DAY ${d.id} · ${d.date}</span>
         <span class="route">${esc(d.route)}</span>
-        <span class="day-total">${t>0?fmt(t):''}</span>
         <span class="chev">▾</span>
       </div>
       <div class="day-meta" style="display:${open?'block':'none'}; padding:0 16px 8px; font-size:12px; color:var(--ink-soft);">
@@ -586,17 +711,21 @@ function renderSchedule(){
   }).join("");
 }
 
+/* FIX #8: t เป็น "" แปลว่าไม่ระบุเวลา -> แสดงเป็นข้อความ ไม่ยัดเข้า input type=time
+   FIX #9: ไม่มีช่องเงินในตารางแล้ว ค่าใช้จ่ายอยู่ที่ Dashboard ที่เดียว */
 function timelineRow(dayId, idx, it){
+  const timeCell = it.t
+    ? `<input type="time" value="${esc(it.t)}" onchange="updateTime(${dayId},${idx},this.value)">`
+    : `<span class="no-time">ไม่ระบุเวลา</span>
+       <input type="time" value="" onchange="updateTime(${dayId},${idx},this.value)" style="width:70px;opacity:.55">`;
   const place = it.p ? `<div class="tl-place">📍 ${esc(it.p)}</div>` : "";
-  const cost = (it.c>0) ? `<div class="tl-cost">💵 ${fmt(it.c)}</div>` : "";
+  const warn  = it.w ? `<div class="tl-warn">⚠️ ${esc(it.w)}</div>` : "";
   return `
   <div class="tl-item">
-    <div class="tl-time">
-      <input type="time" value="${esc(it.t)}" onchange="updateTime(${dayId},${idx},this.value)">
-    </div>
+    <div class="tl-time">${timeCell}</div>
     <div class="tl-title">${esc(it.n)}</div>
     ${place}
-    ${cost}
+    ${warn}
     <div class="tl-actions">
       <button class="mini-btn" onclick="startEdit(${dayId},${idx})" title="แก้ไข">✏️</button>
       <button class="mini-btn del" onclick="delRow(${dayId},${idx})" title="ลบ">🗑️</button>
@@ -605,167 +734,209 @@ function timelineRow(dayId, idx, it){
 }
 
 function toggleDay(id){
+  if(openDays.has(id)) openDays.delete(id); else openDays.add(id);
   const el = document.querySelector(`.day-card[data-day="${id}"]`);
-  el.classList.toggle("open");
-  const open = el.classList.contains("open");
+  const open = openDays.has(id);
+  el.classList.toggle("open", open);
   el.querySelector(".day-meta").style.display = open?"block":"none";
   el.querySelector(".timeline").style.display = open?"block":"none";
   el.querySelector(".add-row-btn").style.display = open?"flex":"none";
+  if(!open) closeEditor(id);
 }
 
 function updateTime(dayId, idx, val){
-  state.schedule[dayId][idx].t = val || "—";
-  save();
+  state.schedule[dayId][idx].t = val || "";
+  pushDay(dayId);
+  renderSchedule();
 }
 function delRow(dayId, idx){
   state.schedule[dayId].splice(idx,1);
-  save();
+  pushDay(dayId);
+  renderSchedule();
 }
 
+function editorMarkup(dayId, it, onSave){
+  return `
+    <div class="row">
+      <input type="time" id="f-t-${dayId}" value="${it ? esc(it.t) : "09:00"}">
+    </div>
+    <div class="hint">เว้นว่างได้ถ้ายังไม่ระบุเวลา</div>
+    <input type="text" id="f-n-${dayId}" value="${it ? esc(it.n) : ""}" placeholder="กิจกรรม (เช่น อาหารกลางวัน)">
+    <input type="text" id="f-p-${dayId}" value="${it ? esc(it.p) : ""}" placeholder="สถานที่ (เช่น ปากเซ)">
+    <input type="text" id="f-w-${dayId}" value="${it ? esc(it.w) : ""}" placeholder="ข้อควรระวัง / ต้องยืนยันล่วงหน้า (ไม่บังคับ)">
+    <div class="btn-row">
+      <button class="btn cancel" onclick="closeEditor(${dayId})">ยกเลิก</button>
+      <button class="btn save" onclick="${onSave}">บันทึก</button>
+    </div>`;
+}
 function startAdd(dayId){
   const ed = document.getElementById(`editor-${dayId}`);
   ed.style.display = "flex";
-  ed.innerHTML = `
-    <input type="time" id="f-t-${dayId}" value="09:00">
-    <input type="text" id="f-n-${dayId}" placeholder="กิจกรรม (เช่น อาหารกลางวัน)">
-    <input type="text" id="f-p-${dayId}" placeholder="สถานที่ (เช่น ปากเซ)">
-    <div class="row"><input type="number" id="f-c-${dayId}" placeholder="ค่าใช้จ่าย (฿, ไม่บังคับ)" inputmode="numeric"></div>
-    <div class="btn-row">
-      <button class="btn cancel" onclick="closeEditor(${dayId})">ยกเลิก</button>
-      <button class="btn save" onclick="saveAdd(${dayId})">บันทึก</button>
-    </div>`;
+  ed.innerHTML = editorMarkup(dayId, null, `saveAdd(${dayId})`);
   setTimeout(()=>{ const el=document.getElementById(`f-n-${dayId}`); if(el) el.focus(); },50);
 }
 function startEdit(dayId, idx){
   const it = state.schedule[dayId][idx];
   const ed = document.getElementById(`editor-${dayId}`);
   ed.style.display = "flex";
-  ed.innerHTML = `
-    <input type="time" id="f-t-${dayId}" value="${esc(it.t)}">
-    <input type="text" id="f-n-${dayId}" value="${esc(it.n)}" placeholder="กิจกรรม">
-    <input type="text" id="f-p-${dayId}" value="${esc(it.p)}" placeholder="สถานที่">
-    <div class="row"><input type="number" id="f-c-${dayId}" value="${it.c||0}" placeholder="ค่าใช้จ่าย (฿)"></div>
-    <div class="btn-row">
-      <button class="btn cancel" onclick="closeEditor(${dayId})">ยกเลิก</button>
-      <button class="btn save" onclick="saveEdit(${dayId},${idx})">บันทึก</button>
-    </div>`;
+  ed.innerHTML = editorMarkup(dayId, it, `saveEdit(${dayId},${idx})`);
 }
-function closeEditor(dayId){ document.getElementById(`editor-${dayId}`).style.display="none"; }
+function closeEditor(dayId){
+  const ed = document.getElementById(`editor-${dayId}`);
+  if(ed){ ed.style.display="none"; ed.innerHTML=""; }
+}
+function readEditor(dayId){
+  return {
+    t: document.getElementById(`f-t-${dayId}`).value || "",
+    n: document.getElementById(`f-n-${dayId}`).value.trim(),
+    p: document.getElementById(`f-p-${dayId}`).value.trim(),
+    w: document.getElementById(`f-w-${dayId}`).value.trim()
+  };
+}
 function saveAdd(dayId){
-  const t = document.getElementById(`f-t-${dayId}`).value || "—";
-  const n = document.getElementById(`f-n-${dayId}`).value.trim();
-  if(!n){ toast("กรุณากรอกกิจกรรม"); return; }
-  const p = document.getElementById(`f-p-${dayId}`).value.trim();
-  const c = parseFloat(document.getElementById(`f-c-${dayId}`).value) || 0;
-  if (!state.schedule[dayId]) state.schedule[dayId] = [];
-  state.schedule[dayId].push({t,n,p,c});
-  save();
+  const v = readEditor(dayId);
+  if(!v.n){ toast("กรุณากรอกกิจกรรม"); return; }
+  state.schedule[dayId].push(v);
+  state.schedule[dayId].sort(sortByTime);
+  pushDay(dayId);
+  closeEditor(dayId);
+  renderSchedule();
+  toast("เพิ่มกิจกรรมแล้ว");
 }
 function saveEdit(dayId, idx){
-  const it = state.schedule[dayId][idx];
-  it.t = document.getElementById(`f-t-${dayId}`).value || "—";
-  it.n = document.getElementById(`f-n-${dayId}`).value.trim();
-  it.p = document.getElementById(`f-p-${dayId}`).value.trim();
-  it.c = parseFloat(document.getElementById(`f-c-${dayId}`).value) || 0;
-  save();
+  const v = readEditor(dayId);
+  if(!v.n){ toast("กรุณากรอกกิจกรรม"); return; }
+  state.schedule[dayId][idx] = v;
+  state.schedule[dayId].sort(sortByTime);
+  pushDay(dayId);
+  closeEditor(dayId);
+  renderSchedule();
+  toast("บันทึกแล้ว");
+}
+/* แถวที่ไม่ระบุเวลาให้ไปอยู่ท้ายวัน */
+function sortByTime(a,b){
+  if(!a.t && !b.t) return 0;
+  if(!a.t) return 1;
+  if(!b.t) return -1;
+  return a.t.localeCompare(b.t);
 }
 
-/* ================= RENDER BUDGET ================= */
-function expenseTotal(){ return (state.expenses||[]).reduce((s,e)=>s+(+e.amt||0),0); }
-function catTotal(cat){ return (state.expenses||[]).filter(e=>e.cat===cat).reduce((s,e)=>s+(+e.amt||0),0); }
-function dayTotal(d){ return (state.expenses||[]).filter(e=>e.day===d).reduce((s,e)=>s+(+e.amt||0),0); }
+/* ================= BUDGET ================= */
+function expArray(){
+  return Object.values(state.expenses||{}).sort((a,b)=>(a.ts||0)-(b.ts||0));
+}
+function expenseTotal(){ return expArray().reduce((s,e)=>s+(+e.amt||0),0); }
+function catTotal(cat){ return expArray().filter(e=>e.cat===cat).reduce((s,e)=>s+(+e.amt||0),0); }
+function dayTotal(d){ return expArray().filter(e=>+e.day===+d).reduce((s,e)=>s+(+e.amt||0),0); }
+
+/* FIX #5/#6: สร้าง option ครั้งเดียวตอน init และไม่ยุ่งกับค่าที่ผู้ใช้เลือกไว้อีก */
+function buildSelectsOnce(){
+  const dayOpts = DAYS_META.map(d=>`<option value="${d.id}">Day ${d.id} · ${d.date}</option>`).join("")
+                + `<option value="${UNASSIGNED}">ไม่ระบุวัน</option>`;
+  const catOpts = CATS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  document.getElementById("expDay").innerHTML = dayOpts;
+  document.getElementById("expCat").innerHTML = catOpts;
+  document.getElementById("filterDay").innerHTML = '<option value="all">ทุกวัน</option>' + dayOpts;
+  document.getElementById("filterCat").innerHTML = '<option value="all">ทุกหมวด</option>' + catOpts;
+}
 
 function renderBudget(){
   const total = expenseTotal();
   const budget = state.budget || 0;
   const people = state.people || 2;
+  const left = budget - total;
 
   document.getElementById("kpiTotal").textContent = fmt(total);
   document.getElementById("kpiBudget").textContent = budget>0 ? fmt(budget) : "—";
   document.getElementById("kpiPer").textContent = fmt(total/people);
   document.getElementById("kpiPerLabel").textContent = `ต่อคน · ${people} คน`;
   document.getElementById("peopleNum").textContent = people;
-  document.getElementById("kpiLeft").textContent = budget>0 ? fmt(budget-total) : "—";
+
+  const leftEl = document.getElementById("kpiLeft");
+  leftEl.textContent = budget>0 ? fmt(left) : "—";
+  leftEl.className = "value" + (budget>0 && left<0 ? " neg" : "");
 
   const pct = budget>0 ? (total/budget)*100 : 0;
   const bar = document.getElementById("kpiBar");
   bar.style.width = Math.min(pct,100) + "%";
   bar.className = "fill" + (pct>=100 ? " over" : pct>=80 ? " warn" : "");
-  document.getElementById("kpiBarLabel").textContent = budget>0 ? `ใช้ไปแล้ว ${Math.round(pct)}%${pct>=100?" — เกินงบ!":""}` : "ยังไม่ได้ตั้งงบประมาณ";
-  document.getElementById("kpiTotalHint").textContent = (state.expenses ? state.expenses.length : 0) + " รายการ";
-
-  const daySel = document.getElementById("expDay");
-  daySel.innerHTML = DAYS_META.map(d=>`<option value="${d.id}">Day ${d.id} · ${d.date}</option>`).join("");
-
-  const fc = document.getElementById("filterCat");
-  fc.innerHTML = '<option value="all">ทุกหมวด</option>' + CATS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  document.getElementById("kpiBarLabel").textContent = budget>0
+    ? `ใช้ไปแล้ว ${Math.round(pct)}%${pct>=100?" — เกินงบ!":""}`
+    : "ยังไม่ได้ตั้งงบประมาณ";
+  document.getElementById("kpiTotalHint").textContent = expArray().length + " รายการ";
+  document.getElementById("heroTotal").textContent = fmt(total);
 
   renderCatBars();
   renderDayBars();
   renderExpenses();
-  document.getElementById("heroTotal").textContent = fmt(total);
 }
 
 function renderCatBars(){
   const el = document.getElementById("catBars");
   const total = expenseTotal();
-  if(total === 0){ el.innerHTML = '<div class="empty">ยังไม่มีรายการค่าใช้จ่าย</div>'; document.getElementById("catLegend").innerHTML=""; return; }
-  const rows = CATS.map((c,i)=>{
-    const v = catTotal(c);
-    return {c, i, v};
-  }).filter(r=>r.v>0).sort((a,b)=>b.v-a.v);
-  el.innerHTML = rows.map(r=>{
-    const pct = (r.v/total)*100;
-    return `<div class="cat-row">
+  if(total === 0){
+    el.innerHTML = '<div class="empty">ยังไม่มีรายการค่าใช้จ่าย</div>';
+    document.getElementById("catLegend").innerHTML = "";
+    return;
+  }
+  const rows = CATS.map((c,i)=>({c, i, v:catTotal(c)})).filter(r=>r.v>0).sort((a,b)=>b.v-a.v);
+  el.innerHTML = rows.map(r=>`
+    <div class="cat-row">
       <span class="name">${CAT_ICONS[r.i]} ${esc(r.c)}</span>
-      <div class="track"><div class="fill" style="width:${pct}%;background:${CAT_COLORS[r.i]}"></div></div>
+      <div class="track"><div class="fill" style="width:${(r.v/total)*100}%;background:${CAT_COLORS[r.i]}"></div></div>
       <span class="amt">${fmt(r.v)}</span>
-    </div>`;
-  }).join("");
+    </div>`).join("");
   document.getElementById("catLegend").innerHTML = rows.map(r=>
     `<span class="lg"><span class="sw" style="background:${CAT_COLORS[r.i]}"></span>${esc(r.c)} · ${Math.round(r.v/total*100)}%</span>`
   ).join("");
 }
 
+/* FIX #10: รายการที่ไม่ผูกวัน (เช่น เงินสำรอง) แยกออกจากกราฟรายวัน
+   ไม่งั้นกราฟจะเพี้ยนเหมือนตอนที่ค่าอาหารทั้งทริปถูกยัดไว้ที่ Day 2 */
 function renderDayBars(){
   const el = document.getElementById("dayBars");
   const max = Math.max(1, ...DAYS_META.map(d=>dayTotal(d.id)));
   el.innerHTML = DAYS_META.map(d=>{
     const v = dayTotal(d.id);
-    const w = (v/max)*100;
     return `<div class="day-bar-row">
       <span class="dl">DAY ${d.id}</span>
-      <div class="track"><div class="fill" style="width:${w}%;background:${d.color}"></div></div>
+      <div class="track"><div class="fill" style="width:${(v/max)*100}%;background:${d.color}"></div></div>
       <span class="amt">${fmt(v)}</span>
     </div>`;
   }).join("");
+  const un = dayTotal(UNASSIGNED);
+  document.getElementById("unassignedNote").textContent =
+    un > 0 ? `ไม่ได้รวมรายการที่ไม่ระบุวันอีก ${fmt(un)} ไว้ในกราฟนี้` : "";
 }
 
 function renderExpenses(){
   const el = document.getElementById("expList");
   const fc = document.getElementById("filterCat").value;
   const fd = document.getElementById("filterDay").value;
-  let list = (state.expenses || []).slice().reverse();
+  let list = expArray().slice().reverse();
   if(fc!=="all") list = list.filter(e=>e.cat===fc);
-  if(fd!=="all") list = list.filter(e=>String(e.day)===fd);
+  if(fd!=="all") list = list.filter(e=>String(e.day)===String(fd));
   if(list.length===0){ el.innerHTML = '<div class="empty">ไม่มีรายการในตัวกรองนี้</div>'; return; }
   const catIcon = c => CAT_ICONS[CATS.indexOf(c)] || "📦";
-  const dayLabel = d => (DAYS_META.find(m=>m.id===+d)||{}).date || "—";
   el.innerHTML = `<table class="exp-table">
     <tr><th></th><th>รายการ</th><th>วัน</th><th class="num">บาท</th><th></th></tr>
     ${list.map(e=>`
       <tr>
         <td class="ic">${catIcon(e.cat)}</td>
         <td>${esc(e.name)}<div style="font-size:11px;color:var(--ink-faint)">${esc(e.cat)}</div></td>
-        <td>${dayLabel(e.day)}</td>
+        <td>${esc(dayLabelOf(e.day))}</td>
         <td class="num">${fmt(e.amt)}</td>
-        <td><button class="exp-del" onclick="delExpense('${e.id||'x'}')">🗑️</button></td>
+        <td><button class="exp-del" onclick="delExpense('${esc(e.id)}')">🗑️</button></td>
       </tr>`).join("")}
   </table>`;
 }
+
 function delExpense(id){
-  const i = state.expenses.findIndex(e=>e.id===id);
-  if(i>=0){ state.expenses.splice(i,1); save(); }
+  if(!state.expenses[id]) return;
+  delete state.expenses[id];
+  pushExpense(id);
+  renderBudget();
+  toast("ลบรายการแล้ว");
 }
 function toggleExpForm(){
   const f = document.getElementById("expForm");
@@ -778,34 +949,48 @@ function addExpense(){
   if(!amt || amt<=0){ toast("กรุณากรอกจำนวนเงิน"); return; }
   const cat = document.getElementById("expCat").value;
   const day = parseInt(document.getElementById("expDay").value,10);
-  if(!state.expenses) state.expenses = [];
-  state.expenses.push({ id: "e"+Date.now(), name, amt, cat, day });
-  save();
+  const id = "e"+Date.now()+Math.floor(Math.random()*1000);
+  state.expenses[id] = {id, ts:Date.now(), name, amt, cat, day};
+  pushExpense(id);
   document.getElementById("expName").value="";
   document.getElementById("expAmount").value="";
   document.getElementById("expForm").style.display="none";
+  renderBudget();
+  toast("เพิ่มรายการแล้ว");
 }
 function setBudget(){
   const v = parseFloat(document.getElementById("budgetInput").value);
   if(!v || v<=0){ toast("กรอกงบประมาณให้ถูกต้อง"); return; }
-  state.budget = v; 
-  save();
+  state.budget = v;
+  pushAt("budget", v);
+  document.getElementById("budgetInput").value="";
+  renderBudget();
+  toast("ตั้งงบประมาณแล้ว");
 }
 function changePeople(d){
   const cur = state.people || 2;
   const next = Math.max(1, Math.min(20, cur + d));
   if(next === cur) return;
-  state.people = next; 
-  save();
+  state.people = next;
+  pushAt("people", next);
+  renderBudget();
+}
+
+/* ================= RENDER ALL ================= */
+function renderAll(){
+  renderSchedule();
+  renderBudget();
+  didFirstRender = true;
 }
 
 /* ================= THEME ================= */
 (function initTheme(){
-  let th = localStorage.getItem("ubon-bolaven-theme") || "light";
+  let th = "light";
+  try{ th = localStorage.getItem("ubon-bolaven-theme") || "light"; }catch(e){}
   applyTheme(th);
   document.getElementById("themeBtn").addEventListener("click", ()=>{
     th = th==="light" ? "dark" : "light";
-    localStorage.setItem("ubon-bolaven-theme", th);
+    try{ localStorage.setItem("ubon-bolaven-theme", th); }catch(e){}
     applyTheme(th);
   });
 })();
@@ -820,6 +1005,16 @@ function applyTheme(th){
     document.body.style.background = "#0E1712";
   }
 }
+
+/* ================= BOOT ================= */
+(function boot(){
+  buildSelectsOnce();
+  const local = loadLocal();
+  if(local) state = local;
+  renderAll();
+  setSync(firebaseOK ? "กำลังเชื่อมต่อ" : "ออฟไลน์ (เก็บในเครื่อง)", !firebaseOK);
+  attachListener();
+})();
 </script>
 </body>
 </html>
