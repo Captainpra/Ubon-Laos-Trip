@@ -10,6 +10,7 @@
 
 <!-- Firebase SDK (Compat Version สำหรับใช้งานบน Static Web โดยไม่ต้อง Build) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <style>
@@ -1013,7 +1014,16 @@ function applyTheme(th){
   if(local) state = local;
   renderAll();
   setSync(firebaseOK ? "กำลังเชื่อมต่อ" : "ออฟไลน์ (เก็บในเครื่อง)", !firebaseOK);
-  attachListener();
+  /* ล็อกอินแบบ Anonymous ก่อนเริ่มซิงก์ เพื่อให้ใช้ Rules แบบ auth != null ได้
+     ถ้าล็อกอินไม่สำเร็จ (เช่นยังไม่ได้เปิด Anonymous ใน Console) ให้ไปต่อแบบเดิม ไม่ให้แอปพัง */
+  let started = false;
+  const start = ()=>{ if(started) return; started = true; attachListener(); };
+  try{
+    firebase.auth().signInAnonymously()
+      .catch(e=>console.warn("anonymous sign-in failed:", e && e.code))
+      .then(start);
+    setTimeout(start, 4000); /* กันค้างถ้า auth ไม่ตอบ */
+  }catch(e){ start(); }
 })();
 </script>
 </body>
